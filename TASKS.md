@@ -13,10 +13,11 @@
       Note: README.md (MIT suggested, no LICENSE file yet) and CONTRIBUTING.md added.
 
 ## Phase 1: Circuit (400 m loop)
-- [ ] Write an engine-independent circuit math module (C++ or Python prototype with tests):
+- [x] Write an engine-independent circuit math module (C++ or Python prototype with tests):
       generate a closed stadium-shaped loop of total length 400 m (two straights + two
       semicircles), sampling points with position, tangent, and distance along track.
       Include unit tests verifying total length = 400 m +/- 0.1 m.
+      Note: C++17 module in core/circuit (R=30 m, straights ~105.75 m); tests pass locally via CMake.
 - [ ] Create ACircuitActor in UE using a USplineComponent built from that math, with
       configurable width, closed loop, and a function GetTransformAtDistance(float Meters).
 - [ ] Generate road mesh along the spline (procedural mesh or spline mesh components)

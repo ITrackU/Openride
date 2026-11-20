@@ -30,6 +30,12 @@ docs/                       ARCHITECTURE, ASSETS, BLOCKERS
 - Not compile-tested: UE cannot build on the ARM dev machine. First PC build may need small fixes.
 - Git LFS must be installed (`git lfs install`) before adding uasset/umap/fbx/png/wav files.
 
+## Core module (engine-independent)
+- `core/circuit/StadiumCircuit.{h,cpp}`: `FStadiumCircuit` (default 400 m, R = 30 m; straight length derived).
+  `SampleAtDistance(m)` returns position, unit tangent and wrapped distance; `GenerateSamples(N)` for spline points.
+- Local frame: start at origin heading +X, loop runs counter-clockwise, metres.
+- Tests: `cd core/circuit && cmake -S . -B build && cmake --build build && ./build/StadiumCircuitTests`
+
 ## Class overview (planned)
 | Class | Responsibility |
 |-------|----------------|
