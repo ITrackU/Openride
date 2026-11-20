@@ -1,8 +1,9 @@
 # OpenRide: engine tasks (unreal branch)
 
 ## Phase 0: Foundation
-- [ ] Create docs/ARCHITECTURE.md: module layout, class overview, coding conventions,
+- [x] Create docs/ARCHITECTURE.md: module layout, class overview, coding conventions,
       and a short roadmap. Create docs/ASSETS.md (license tracking) and docs/BLOCKERS.md.
+      Note: created the three docs in docs/; layout includes a planned engine-independent core/ folder.
 - [ ] Scaffold a UE5 C++ project: OpenRide.uproject, Source/OpenRide module
       (Build.cs, Target.cs files, module class), .gitignore for Unreal, .gitattributes
       for Git LFS on binary assets (uasset, umap, fbx, png, wav).
