@@ -18,8 +18,9 @@
       semicircles), sampling points with position, tangent, and distance along track.
       Include unit tests verifying total length = 400 m +/- 0.1 m.
       Note: C++17 module in core/circuit (R=30 m, straights ~105.75 m); tests pass locally via CMake.
-- [ ] Create ACircuitActor in UE using a USplineComponent built from that math, with
+- [x] Create ACircuitActor in UE using a USplineComponent built from that math, with
       configurable width, closed loop, and a function GetTransformAtDistance(float Meters).
+      Note: Source/OpenRide/Circuit/CircuitActor.{h,cpp} added (wraps core math via CircuitCoreBridge.cpp); not compile-tested on the Pi.
 - [ ] Generate road mesh along the spline (procedural mesh or spline mesh components)
       with a basic road material placeholder and lane markings.
 - [ ] Add ground plane/landscape placeholder with a grass material and bounds around the loop.
