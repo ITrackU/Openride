@@ -24,7 +24,8 @@
 - [x] Generate road mesh along the spline (procedural mesh or spline mesh components)
       with a basic road material placeholder and lane markings.
       Note: core/road geometry (tested via CMake) feeds two ProceduralMesh components in ACircuitActor; placeholder grid material; not compile-tested on the Pi.
-- [ ] Add ground plane/landscape placeholder with a grass material and bounds around the loop.
+- [x] Add ground plane/landscape placeholder with a grass material and bounds around the loop.
+      Note: AGroundActor (Environment/) fits a plane + playable-bounds box to the circuit; placeholder grid material for grass; not compile-tested on the Pi.
 
 ## Phase 2: Player and camera (viewer mode)
 - [ ] Create ACyclistCharacter (or Pawn) with Enhanced Input: WASD/arrows to move along

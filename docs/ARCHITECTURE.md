@@ -13,7 +13,7 @@ Source/
     Player/                 ACyclistCharacter, input, camera modes
     Cyclist/                ABikeActor, anim instance, appearance data
     NPC/                    ANPCCyclist, ARaceManager
-    Environment/            grass, buildings, sky/lighting
+    Environment/            AGroundActor (done), grass, buildings, sky/lighting
     UI/                     HUD, menus
   OpenRide.Target.cs
   OpenRideEditor.Target.cs
@@ -46,6 +46,7 @@ docs/                       ARCHITECTURE, ASSETS, BLOCKERS
 | Class | Responsibility |
 |-------|----------------|
 | `ACircuitActor` (done, uncompiled) | Owns a `USplineComponent` built from circuit math; `GetTransformAtDistance(Meters)`; generates road + lane marking meshes |
+| `AGroundActor` (done, uncompiled) | Grass ground plane just under the road, fitted to the circuit bounds + margin; `UBoxComponent` playable bounds, `IsInsideBounds()`; placeholder grid material |
 | `ACyclistCharacter` | Player pawn; follows circuit by distance; cameras and input |
 | `ABikeActor` | Wheels, steering/lean visuals, sockets for hands/feet/saddle |
 | `UCyclistAnimInstance` | Exposes Cadence, Speed, Lean to the Animation Blueprint |
