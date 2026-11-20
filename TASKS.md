@@ -8,8 +8,9 @@
       (Build.cs, Target.cs files, module class), .gitignore for Unreal, .gitattributes
       for Git LFS on binary assets (uasset, umap, fbx, png, wav).
       Note: scaffold added (uproject for UE 5.4, module, targets, Config, .gitignore, LFS attributes); not compile-tested on the Pi.
-- [ ] Add README.md (vision, current phase, build instructions for a PC, license choice
+- [x] Add README.md (vision, current phase, build instructions for a PC, license choice
       suggestion with rationale) and CONTRIBUTING.md.
+      Note: README.md (MIT suggested, no LICENSE file yet) and CONTRIBUTING.md added.
 
 ## Phase 1: Circuit (400 m loop)
 - [ ] Write an engine-independent circuit math module (C++ or Python prototype with tests):
