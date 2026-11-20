@@ -21,6 +21,7 @@ Config/                     DefaultEngine/Game/Input .ini (Enhanced Input enable
 Content/                    UE assets (binary files tracked via Git LFS, see .gitattributes)
 core/                       Engine-independent pure logic + unit tests
   circuit/                  Stadium loop math (testable on ARM Linux, no UE)
+  road/                     Road + lane-marking ribbon geometry (no UE)
 docs/                       ARCHITECTURE, ASSETS, BLOCKERS
 ```
 
@@ -35,12 +36,16 @@ docs/                       ARCHITECTURE, ASSETS, BLOCKERS
   `SampleAtDistance(m)` returns position, unit tangent and wrapped distance; `GenerateSamples(N)` for spline points.
 - Local frame: start at origin heading +X, loop runs counter-clockwise, metres.
 - UE reuse: `Source/OpenRide/Circuit/CircuitCoreBridge.cpp` `#include`s the core .cpp (UBT only compiles files inside the module); `ACircuitActor` includes the core header by relative path.
+- `core/road/RoadMesh.{h,cpp}`: `BuildLoopRibbon` / `BuildDashedRibbon` return `FRoadMesh` (vertices, UVs, up-facing triangles) in metres.
+  `ACircuitActor::RebuildRoadMesh()` copies them into two `UProceduralMeshComponent`s (asphalt, markings: 2 solid edge lines + dashed centre line); `RoadMeshBridge.cpp` compiles the core source into the module.
+  Materials are placeholders (engine WorldGridMaterial) until real assets are added; UV.V is in metres.
+- Tests: `cd core/road && cmake -S . -B build && cmake --build build && ./build/RoadMeshTests`
 - Tests: `cd core/circuit && cmake -S . -B build && cmake --build build && ./build/StadiumCircuitTests`
 
 ## Class overview (planned)
 | Class | Responsibility |
 |-------|----------------|
-| `ACircuitActor` (done, uncompiled) | Owns a `USplineComponent` built from circuit math; `GetTransformAtDistance(Meters)` |
+| `ACircuitActor` (done, uncompiled) | Owns a `USplineComponent` built from circuit math; `GetTransformAtDistance(Meters)`; generates road + lane marking meshes |
 | `ACyclistCharacter` | Player pawn; follows circuit by distance; cameras and input |
 | `ABikeActor` | Wheels, steering/lean visuals, sockets for hands/feet/saddle |
 | `UCyclistAnimInstance` | Exposes Cadence, Speed, Lean to the Animation Blueprint |

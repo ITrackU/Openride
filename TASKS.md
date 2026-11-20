@@ -21,8 +21,9 @@
 - [x] Create ACircuitActor in UE using a USplineComponent built from that math, with
       configurable width, closed loop, and a function GetTransformAtDistance(float Meters).
       Note: Source/OpenRide/Circuit/CircuitActor.{h,cpp} added (wraps core math via CircuitCoreBridge.cpp); not compile-tested on the Pi.
-- [ ] Generate road mesh along the spline (procedural mesh or spline mesh components)
+- [x] Generate road mesh along the spline (procedural mesh or spline mesh components)
       with a basic road material placeholder and lane markings.
+      Note: core/road geometry (tested via CMake) feeds two ProceduralMesh components in ACircuitActor; placeholder grid material; not compile-tested on the Pi.
 - [ ] Add ground plane/landscape placeholder with a grass material and bounds around the loop.
 
 ## Phase 2: Player and camera (viewer mode)
