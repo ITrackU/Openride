@@ -17,10 +17,18 @@ Source/
     UI/                     HUD, menus
   OpenRide.Target.cs
   OpenRideEditor.Target.cs
+Config/                     DefaultEngine/Game/Input .ini (Enhanced Input enabled)
+Content/                    UE assets (binary files tracked via Git LFS, see .gitattributes)
 core/                       Engine-independent pure logic + unit tests
   circuit/                  Stadium loop math (testable on ARM Linux, no UE)
 docs/                       ARCHITECTURE, ASSETS, BLOCKERS
 ```
+
+## Project scaffold notes
+- Targets UE 5.4 (`EngineAssociation` in `OpenRide.uproject`); change it if you use another 5.x.
+- Module `OpenRide` is the primary game module; log category `LogOpenRide` is declared in `OpenRide.h`.
+- Not compile-tested: UE cannot build on the ARM dev machine. First PC build may need small fixes.
+- Git LFS must be installed (`git lfs install`) before adding uasset/umap/fbx/png/wav files.
 
 ## Class overview (planned)
 | Class | Responsibility |
