@@ -23,7 +23,7 @@ Content/                    UE assets (binary files tracked via Git LFS, see .gi
 core/                       Engine-independent pure logic + unit tests
   circuit/                  Stadium loop math (testable on ARM Linux, no UE)
   road/                     Road + lane-marking ribbon geometry (no UE)
-docs/                       ARCHITECTURE, ASSETS, BLOCKERS
+docs/                       ARCHITECTURE, ASSETS, BLOCKERS, CYCLIST_PIPELINE (rider/bike asset spec)
 ```
 
 ## Project scaffold notes

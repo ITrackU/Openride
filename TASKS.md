@@ -41,9 +41,10 @@
       Note: AOpenRideHUD (canvas) + AOpenRideGameMode + core/lap FLapTracker (tested via CMake); not compile-tested on the Pi.
 
 ## Phase 3: Cyclist and bike models
-- [ ] Define the cyclist asset pipeline in docs/: skeletal mesh requirements, skeleton
+- [x] Define the cyclist asset pipeline in docs/: skeletal mesh requirements, skeleton
       naming, animation list (idle, pedaling cadence-driven, coasting, standing sprint),
       and how rider + bike attach via sockets.
+      Note: docs/CYCLIST_PIPELINE.md added (meshes, skeletons, sockets, animations, anim input contract); docs only.
 - [ ] Implement a cadence-driven pedaling animation system in C++ (AnimInstance exposing
       Cadence, Speed, Lean) with an Animation Blueprint spec documented for the PC side.
 - [ ] Create ABikeActor with wheel rotation tied to speed, steering/lean visual, and
