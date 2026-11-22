@@ -46,7 +46,8 @@ Files exist, encoding is plain ASCII, so the module include path is the suspect
 - [ ] Regenerate project files (`OpenRide.uproject` -> Generate Visual Studio project files) and confirm the `.sln` builds from the IDE too.
 
 ### Prevent regressions
-- [ ] Add a `scripts/build-win.ps1` that runs the exact Build.bat command, tees to `build.log`, and prints only error lines.
+- [x] Add a `scripts/build-win.ps1` that runs the exact Build.bat command, tees to `build.log`, and prints only error lines.
+  - Added `scripts/build-win.ps1` (`-EngineDir`/`UE_ROOT`, `-Target`); not run, needs Windows. Uses the standard `Build.bat <Target> Win64 Development -Project=...` form.
 - [ ] Add a CI job (GitHub Actions, Windows runner with UE or a documented manual step) or a documented local check so the Unreal module is compiled before merge.
 - [ ] Update `CLAUDE.md`: the Linux automation cannot compile the Unreal module; any change under `Source/` must be listed for a manual Windows build check.
 - [ ] Add `build.log` to `.gitignore`.
