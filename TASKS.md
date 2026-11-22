@@ -56,8 +56,9 @@
       Note: UCyclistAppearanceData (Cyclist/) applies colours via MIDs + core/appearance seeded randomiser (tested via CMake); not compile-tested on the Pi.
 
 ## Phase 4: NPC cyclists
-- [ ] Create ANPCCyclist reusing the same rider+bike classes, following the circuit spline
+- [x] Create ANPCCyclist reusing the same rider+bike classes, following the circuit spline
       at a configurable target speed with slight lane offset.
+      Note: ANPCCyclist (NPC/) + core/npc follower model (tested via CMake); rider mesh/ABP and bike class assigned in a Blueprint subclass; not compile-tested on the Pi.
 - [ ] Spawner/manager (ARaceManager): spawn N NPCs with randomized appearance, speeds,
       and start offsets. Basic overtaking/avoidance via lane offset.
 
