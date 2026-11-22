@@ -24,6 +24,7 @@ core/                       Engine-independent pure logic + unit tests
   circuit/                  Stadium loop math (testable on ARM Linux, no UE)
   road/                     Road + lane-marking ribbon geometry (no UE)
   anim/                     Cadence / lean / sprint model for the rider animation (no UE)
+  bike/                     Wheel spin / steering / lean model for the bike (no UE)
 docs/                       ARCHITECTURE, ASSETS, BLOCKERS, CYCLIST_PIPELINE (rider/bike asset spec), ANIMATION_BLUEPRINT_SPEC (ABP_Cyclist)
 ```
 
@@ -45,6 +46,8 @@ docs/                       ARCHITECTURE, ASSETS, BLOCKERS, CYCLIST_PIPELINE (ri
 - `core/movement/CyclistMovement.h`: header-only `StepMovement` speed model (throttle/brake/coast, configurable max speed); included directly by `ACyclistCharacter`.
 - `core/lap/LapTracker.h`: header-only `FLapTracker` (total distance, completed laps, lap/last/best time); fed by `ACyclistCharacter` from the unwrapped movement advance.
 - `core/anim/CyclistAnimModel.h`: header-only `StepAnimModel` derives cadence (fixed gearing), lean (banking from speed x yaw rate) and sprint (hysteresis) from motion; used by `UCyclistAnimInstance`.
+- `core/bike/BikeModel.h`: header-only `StepBikeModel` (wheel spin = v/r, bicycle-kinematics steering, banking lean); used by `ABikeActor`.
+- Tests: `cd core/bike && cmake -S . -B build && cmake --build build && ./build/BikeModelTests`
 - Tests: `cd core/anim && cmake -S . -B build && cmake --build build && ./build/CyclistAnimModelTests`
 - Tests: `cd core/lap && cmake -S . -B build && cmake --build build && ./build/LapTrackerTests`
 - Tests: `cd core/movement && cmake -S . -B build && cmake --build build && ./build/CyclistMovementTests`
@@ -58,7 +61,7 @@ docs/                       ARCHITECTURE, ASSETS, BLOCKERS, CYCLIST_PIPELINE (ri
 | `ACyclistCharacter` (done, uncompiled) | `APawn` following the circuit by distance; Enhanced Input built in code (no .uasset): W/S/Up/Down move, mouse look, scroll zoom, `C` cycles chase / first-person / free-fly camera (`ECyclistCameraMode`); in free-fly the rider is parked and WASD+E/Q fly the camera along the view direction; speed from `core/movement` |
 | `AOpenRideHUD` (done, uncompiled) | `AHUD` canvas overlay (UI/): speed km/h, distance, lap counter, lap/last/best time; reads `ACyclistCharacter` getters |
 | `AOpenRideGameMode` (done, uncompiled) | Core/: default pawn = `ACyclistCharacter`, HUD = `AOpenRideHUD`; set as `GlobalDefaultGameMode` in DefaultEngine.ini |
-| `ABikeActor` | Wheels, steering/lean visuals, sockets for hands/feet/saddle |
+| `ABikeActor` (done, uncompiled) | Cyclist/: measures its own speed + yaw rate, runs `core/bike`; rolls `LeanPivot` (lean), exposes wheel angle / steer for `UBikeAnimInstance` (`ABP_Bike`); `AttachRider()` snaps rider to `Saddle`, `GetSocketWorldLocation()` for Hand*/Foot* IK targets |
 | `UCyclistAnimInstance` (done, uncompiled) | Cyclist/: measures owner speed + yaw rate, runs `core/anim`, exposes Speed, Cadence, Lean, bSprinting, bPedaling to `ABP_Cyclist` (spec in docs/ANIMATION_BLUEPRINT_SPEC.md) |
 | `UCyclistAppearanceData` | Data asset: jersey, helmet, bike colour |
 | `ANPCCyclist` | Same rider+bike classes, follows spline at target speed |
