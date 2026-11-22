@@ -49,7 +49,7 @@ docs/                       ARCHITECTURE, ASSETS, BLOCKERS
 |-------|----------------|
 | `ACircuitActor` (done, uncompiled) | Owns a `USplineComponent` built from circuit math; `GetTransformAtDistance(Meters)`; generates road + lane marking meshes |
 | `AGroundActor` (done, uncompiled) | Grass ground plane just under the road, fitted to the circuit bounds + margin; `UBoxComponent` playable bounds, `IsInsideBounds()`; placeholder grid material |
-| `ACyclistCharacter` (done, uncompiled) | `APawn` following the circuit by distance; Enhanced Input built in code (no .uasset): W/S/Up/Down move, mouse look, scroll zoom, `C` toggles chase/first-person camera; constant placeholder speed until the movement model task |
+| `ACyclistCharacter` (done, uncompiled) | `APawn` following the circuit by distance; Enhanced Input built in code (no .uasset): W/S/Up/Down move, mouse look, scroll zoom, `C` cycles chase / first-person / free-fly camera (`ECyclistCameraMode`); in free-fly the rider is parked and WASD+E/Q fly the camera along the view direction; speed from `core/movement` |
 | `ABikeActor` | Wheels, steering/lean visuals, sockets for hands/feet/saddle |
 | `UCyclistAnimInstance` | Exposes Cadence, Speed, Lean to the Animation Blueprint |
 | `UCyclistAppearanceData` | Data asset: jersey, helmet, bike colour |

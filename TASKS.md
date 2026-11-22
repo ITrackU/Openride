@@ -34,8 +34,9 @@
 - [x] Implement simple cycling movement model: speed accelerate/decelerate/brake with
       configurable max speed, constrained to the circuit spline (follow by distance).
       Note: core/movement (header-only, tested via CMake) drives ACyclistCharacter; W accelerates, S brakes, release coasts; not compile-tested on the Pi.
-- [ ] Camera system: third-person chase cam, first-person cam, free-fly debug cam,
+- [x] Camera system: third-person chase cam, first-person cam, free-fly debug cam,
       switchable at runtime.
+      Note: ECyclistCameraMode in ACyclistCharacter; `C` cycles Chase/FirstPerson/FreeFly (WASD+E/Q fly, rider parked); not compile-tested on the Pi.
 - [ ] Create a minimal HUD: speed (km/h), distance, lap counter, lap time.
 
 ## Phase 3: Cyclist and bike models

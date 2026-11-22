@@ -55,6 +55,10 @@ void ACyclistCharacter::CreateDefaultInput()
 
 	MoveAction = NewObject<UInputAction>(this, TEXT("IA_Move"));
 	MoveAction->ValueType = EInputActionValueType::Axis1D;
+	FlyRightAction = NewObject<UInputAction>(this, TEXT("IA_FlyRight"));
+	FlyRightAction->ValueType = EInputActionValueType::Axis1D;
+	FlyUpAction = NewObject<UInputAction>(this, TEXT("IA_FlyUp"));
+	FlyUpAction->ValueType = EInputActionValueType::Axis1D;
 	LookAction = NewObject<UInputAction>(this, TEXT("IA_Look"));
 	LookAction->ValueType = EInputActionValueType::Axis2D;
 	ZoomAction = NewObject<UInputAction>(this, TEXT("IA_Zoom"));
@@ -72,6 +76,14 @@ void ACyclistCharacter::CreateDefaultInput()
 	MappingContext->MapKey(MoveAction, EKeys::Up);
 	MapNegated(EKeys::S);
 	MapNegated(EKeys::Down);
+
+	// Free-fly only: D/A strafe, E/Q up/down (ignored in the other camera modes).
+	MappingContext->MapKey(FlyRightAction, EKeys::D);
+	FEnhancedActionKeyMapping& FlyLeft = MappingContext->MapKey(FlyRightAction, EKeys::A);
+	FlyLeft.Modifiers.Add(NewObject<UInputModifierNegate>(MappingContext));
+	MappingContext->MapKey(FlyUpAction, EKeys::E);
+	FEnhancedActionKeyMapping& FlyDown = MappingContext->MapKey(FlyUpAction, EKeys::Q);
+	FlyDown.Modifiers.Add(NewObject<UInputModifierNegate>(MappingContext));
 
 	// Mouse X is yaw as-is; mouse Y needs negating so moving the mouse up looks up.
 	MappingContext->MapKey(LookAction, EKeys::MouseX);
@@ -113,6 +125,10 @@ void ACyclistCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	{
 		EIC->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ACyclistCharacter::OnMove);
 		EIC->BindAction(MoveAction, ETriggerEvent::Completed, this, &ACyclistCharacter::OnMove);
+		EIC->BindAction(FlyRightAction, ETriggerEvent::Triggered, this, &ACyclistCharacter::OnFlyRight);
+		EIC->BindAction(FlyRightAction, ETriggerEvent::Completed, this, &ACyclistCharacter::OnFlyRight);
+		EIC->BindAction(FlyUpAction, ETriggerEvent::Triggered, this, &ACyclistCharacter::OnFlyUp);
+		EIC->BindAction(FlyUpAction, ETriggerEvent::Completed, this, &ACyclistCharacter::OnFlyUp);
 		EIC->BindAction(LookAction, ETriggerEvent::Triggered, this, &ACyclistCharacter::OnLook);
 		EIC->BindAction(ZoomAction, ETriggerEvent::Triggered, this, &ACyclistCharacter::OnZoom);
 		EIC->BindAction(ToggleCameraAction, ETriggerEvent::Started, this, &ACyclistCharacter::OnToggleCamera);
@@ -125,6 +141,16 @@ void ACyclistCharacter::OnMove(const FInputActionValue& Value)
 	MoveAxis = Value.Get<float>();
 }
 
+void ACyclistCharacter::OnFlyRight(const FInputActionValue& Value)
+{
+	FlyRightAxis = Value.Get<float>();
+}
+
+void ACyclistCharacter::OnFlyUp(const FInputActionValue& Value)
+{
+	FlyUpAxis = Value.Get<float>();
+}
+
 void ACyclistCharacter::OnLook(const FInputActionValue& Value)
 {
 	const FVector2D Look = Value.Get<FVector2D>();
@@ -134,7 +160,7 @@ void ACyclistCharacter::OnLook(const FInputActionValue& Value)
 
 void ACyclistCharacter::OnZoom(const FInputActionValue& Value)
 {
-	if (bFirstPerson)
+	if (CameraMode != ECyclistCameraMode::Chase)
 	{
 		return;
 	}
@@ -149,30 +175,59 @@ void ACyclistCharacter::OnToggleCamera(const FInputActionValue& Value)
 
 void ACyclistCharacter::ToggleCameraMode()
 {
-	bFirstPerson = !bFirstPerson;
+	const uint8 Next = (static_cast<uint8>(CameraMode) + 1) % 3;
+	SetCameraMode(static_cast<ECyclistCameraMode>(Next));
+}
+
+void ACyclistCharacter::SetCameraMode(ECyclistCameraMode NewMode)
+{
+	CameraMode = NewMode;
+	// Stale fly input must not leak into the next mode.
+	FlyRightAxis = 0.f;
+	FlyUpAxis = 0.f;
 	ApplyCameraMode();
 }
 
 void ACyclistCharacter::ApplyCameraMode()
 {
-	// First person = zero-length arm at eye height; chase keeps the user-chosen zoom.
-	if (bFirstPerson)
+	switch (CameraMode)
 	{
+	case ECyclistCameraMode::FirstPerson:
+		// Zero-length arm at eye height.
 		SpringArm->TargetArmLength = 0.f;
 		SpringArm->SocketOffset = FVector(0.f, 0.f, 170.f);
 		SpringArm->bDoCollisionTest = false;
-	}
-	else
-	{
+		break;
+	case ECyclistCameraMode::FreeFly:
+		// Camera sits on the pawn itself; the pawn is moved around in Tick.
+		SpringArm->TargetArmLength = 0.f;
+		SpringArm->SocketOffset = FVector::ZeroVector;
+		SpringArm->bDoCollisionTest = false;
+		break;
+	case ECyclistCameraMode::Chase:
+	default:
 		SpringArm->TargetArmLength = FMath::Clamp(350.f, MinArmLength, MaxArmLength);
 		SpringArm->SocketOffset = FVector(0.f, 0.f, 120.f);
 		SpringArm->bDoCollisionTest = true;
+		break;
 	}
 }
 
 void ACyclistCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+
+	if (CameraMode == ECyclistCameraMode::FreeFly)
+	{
+		// The rider is parked (distance/speed kept); only the camera pawn moves.
+		// Leaving free-fly snaps the pawn back onto the circuit via the normal Tick path.
+		const FRotator ViewRot = GetControlRotation();
+		FVector Dir = ViewRot.Vector() * MoveAxis
+			+ FRotationMatrix(ViewRot).GetScaledAxis(EAxis::Y) * FlyRightAxis
+			+ FVector::UpVector * FlyUpAxis;
+		AddActorWorldOffset(Dir.GetClampedToMaxSize(1.f) * FlySpeed * DeltaSeconds);
+		return;
+	}
 
 	if (!Circuit)
 	{

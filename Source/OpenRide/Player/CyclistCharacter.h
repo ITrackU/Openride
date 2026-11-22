@@ -13,6 +13,16 @@ class USceneComponent;
 class UInputAction;
 class UInputMappingContext;
 
+/** Runtime-switchable camera modes. */
+UENUM(BlueprintType)
+enum class ECyclistCameraMode : uint8
+{
+	Chase,
+	FirstPerson,
+	/** Debug camera: detaches from the circuit and flies freely. */
+	FreeFly
+};
+
 /**
  * Viewer-mode player pawn. Moves along the circuit by distance (not by physics),
  * with mouse look, scroll zoom and a camera-mode toggle.
@@ -68,12 +78,25 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
 	float ZoomStep = 40.f;
 
-	/** Toggles between chase (third person) and first person camera. */
+	/** Free-fly speed in cm/s (WASD = move, E/Q = up/down). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera", meta = (ClampMin = "1.0"))
+	float FlySpeed = 1500.f;
+
+	/** Cycles Chase -> FirstPerson -> FreeFly -> Chase. */
 	UFUNCTION(BlueprintCallable, Category = "Camera")
 	void ToggleCameraMode();
 
+	UFUNCTION(BlueprintCallable, Category = "Camera")
+	void SetCameraMode(ECyclistCameraMode NewMode);
+
 	UFUNCTION(BlueprintPure, Category = "Camera")
-	bool IsFirstPerson() const { return bFirstPerson; }
+	ECyclistCameraMode GetCameraMode() const { return CameraMode; }
+
+	UFUNCTION(BlueprintPure, Category = "Camera")
+	bool IsFirstPerson() const { return CameraMode == ECyclistCameraMode::FirstPerson; }
+
+	UFUNCTION(BlueprintPure, Category = "Camera")
+	bool IsFreeFly() const { return CameraMode == ECyclistCameraMode::FreeFly; }
 
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
@@ -83,6 +106,8 @@ protected:
 	virtual void PawnClientRestart() override;
 
 	void OnMove(const FInputActionValue& Value);
+	void OnFlyRight(const FInputActionValue& Value);
+	void OnFlyUp(const FInputActionValue& Value);
 	void OnLook(const FInputActionValue& Value);
 	void OnZoom(const FInputActionValue& Value);
 	void OnToggleCamera(const FInputActionValue& Value);
@@ -104,12 +129,17 @@ protected:
 
 	UPROPERTY() TObjectPtr<UInputMappingContext> MappingContext;
 	UPROPERTY() TObjectPtr<UInputAction> MoveAction;
+	UPROPERTY() TObjectPtr<UInputAction> FlyRightAction;
+	UPROPERTY() TObjectPtr<UInputAction> FlyUpAction;
 	UPROPERTY() TObjectPtr<UInputAction> LookAction;
 	UPROPERTY() TObjectPtr<UInputAction> ZoomAction;
 	UPROPERTY() TObjectPtr<UInputAction> ToggleCameraAction;
 
 private:
-	bool bFirstPerson = false;
+	ECyclistCameraMode CameraMode = ECyclistCameraMode::Chase;
 	/** Forward/back input in [-1, 1] captured this frame. */
 	float MoveAxis = 0.f;
+	/** Free-fly strafe and vertical inputs in [-1, 1]. */
+	float FlyRightAxis = 0.f;
+	float FlyUpAxis = 0.f;
 };
