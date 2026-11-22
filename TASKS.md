@@ -66,8 +66,9 @@
 ## Phase 5: Environment
 - [x] Procedural/instanced grass and foliage around the loop (HISM) with density settings.
       Note: AFoliageActor (Environment/) + core/foliage jittered-grid scatter (tested via CMake); engine cone/grid placeholders; not compile-tested on the Pi.
-- [ ] Modular house/building generator or placeholder meshes placed around the circuit
+- [x] Modular house/building generator or placeholder meshes placed around the circuit
       (several variants), with a data-driven placement actor.
+      Note: ABuildingPlacerActor + UBuildingSetData (Environment/) + core/buildings placement (tested via CMake); cube placeholders, 3 default variants; not compile-tested on the Pi.
 - [ ] Add sky/lighting setup (directional light, sky atmosphere, post-process) and a
       day-time parameter.
 
