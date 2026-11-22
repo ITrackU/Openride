@@ -43,6 +43,7 @@ docs/                       ARCHITECTURE, ASSETS, BLOCKERS, CYCLIST_PIPELINE (ri
   `SampleAtDistance(m)` returns position, unit tangent and wrapped distance; `GenerateSamples(N)` for spline points.
 - Local frame: start at origin heading +X, loop runs counter-clockwise, metres.
 - UE reuse: `Source/OpenRide/Circuit/CircuitCoreBridge.cpp` `#include`s the core .cpp (UBT only compiles files inside the module); `ACircuitActor` includes the core header by relative path.
+- Core source decision: core logic is header-only except `StadiumCircuit.cpp` and `RoadMesh.cpp`. Those two are compiled into the game module by `#include`-ing them from `CircuitCoreBridge.cpp` / `RoadMeshBridge.cpp` (UBT only compiles files under the module folder). No separate static library: it would need a custom ThirdParty module for two files. Revisit if more core `.cpp` files appear. Core `.cpp` files must not be listed twice (no other TU may include them) to avoid duplicate symbols.
 - Include convention: module-root-relative (`"Circuit/CircuitActor.h"`), enabled by `PublicIncludePaths.Add(ModuleDirectory)`; sibling headers in the same folder may be included bare; `core/` headers by relative path (see CLAUDE.md).
 - `core/road/RoadMesh.{h,cpp}`: `BuildLoopRibbon` / `BuildDashedRibbon` return `FRoadMesh` (vertices, UVs, up-facing triangles) in metres.
   `ACircuitActor::RebuildRoadMesh()` copies them into two `UProceduralMeshComponent`s (asphalt, markings: 2 solid edge lines + dashed centre line); `RoadMeshBridge.cpp` compiles the core source into the module.

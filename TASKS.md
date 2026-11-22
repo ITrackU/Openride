@@ -27,7 +27,8 @@ Files exist, encoding is plain ASCII, so the module include path is the suspect
 - [x] Add `core/` to the module include paths in `OpenRide.Build.cs` using `System.IO.Path.GetFullPath(Path.Combine(ModuleDirectory, "../../core"))`.
   - Added via `PublicIncludePaths` in `OpenRide.Build.cs` (not compile-tested on the Pi; needs Windows build check); existing relative includes left unchanged.
 - [ ] Verify the core headers compile under MSVC with UE's flags (check for `/WX`, shadowing, `check`/`min`/`max` macro clashes, RTTI/exceptions assumptions).
-- [ ] Make sure core sources are either header-only or compiled into the module (decide: `core/*.cpp` pulled in via Build.cs vs. a separate static library).
+- [x] Make sure core sources are either header-only or compiled into the module (decide: `core/*.cpp` pulled in via Build.cs vs. a separate static library).
+  - Decision: header-only except 2 `.cpp` files, compiled via the bridge `.cpp` includes (no static library); documented in docs/ARCHITECTURE.md. Not compile-tested (needs Windows).
 
 ### Remaining build errors
 - [ ] Re-run the build after the fixes above; fix each new error one at a time, committing per fix.
