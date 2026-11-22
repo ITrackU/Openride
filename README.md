@@ -15,6 +15,23 @@ Progress is tracked in [TASKS.md](TASKS.md). Design is described in
 [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). Third-party assets and their licenses are listed in
 [docs/ASSETS.md](docs/ASSETS.md); known blockers in [docs/BLOCKERS.md](docs/BLOCKERS.md).
 
+## Screenshots
+No screenshots yet: the code is written on a Raspberry Pi where Unreal Engine cannot run.
+Once the project has been built on a PC, captures of the circuit, cyclist and pause menu
+will be added under `docs/screenshots/` and linked here.
+
+## Roadmap
+1. **Engine foundation (current phase)**: closed ~400 m circuit, keyboard/mouse viewer mode,
+   detailed cyclist and bike, NPC cyclists, grass/road/houses/buildings environment,
+   pause and settings menus, CI for the pure-logic tests. All features are written but
+   still need a first compile and playtest on a PC.
+2. **Next: Bluetooth smart trainer**: connect a trainer (FTMS over BLE), read power and
+   cadence, and map them to the cyclist speed through the engine-independent physics
+   helpers; keyboard stays as a fallback input.
+3. **Then: map generation**: build rideable roads and terrain from open map data
+   (for example OpenStreetMap) without Cesium or other proprietary services, keeping
+   every data source and license listed in `docs/ASSETS.md`.
+
 ## Building (on a PC)
 Requirements: Unreal Engine 5.4 (or another 5.x, see `EngineAssociation` in `OpenRide.uproject`),
 a C++ toolchain (Visual Studio 2022 on Windows; clang via the UE toolchain on Linux; Xcode on macOS),

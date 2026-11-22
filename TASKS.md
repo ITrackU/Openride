@@ -87,5 +87,6 @@
 - [x] Automated checks: a GitHub Actions workflow running the pure-logic unit tests and
       markdown/link lint (no UE build in CI).
       Note: .github/workflows/ci.yml + scripts/run_core_tests.sh (all 14 core modules pass locally); markdownlint/lychee steps not run locally, so lint findings may need a first-pass cleanup.
-- [ ] Update README with screenshots section, roadmap, and next-phase plan
+- [x] Update README with screenshots section, roadmap, and next-phase plan
       (Bluetooth trainer, then map generation).
+      Note: README has Screenshots (placeholder until a PC build exists) and Roadmap sections; docs only.
