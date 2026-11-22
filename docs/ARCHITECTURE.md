@@ -13,7 +13,7 @@ Source/
     Cyclist/                ABikeActor, anim instance, appearance data
     NPC/                    ANPCCyclist, ARaceManager
     Player/                 ACyclistCharacter (viewer-mode pawn, input, camera)
-    Environment/            AGroundActor (done), grass, buildings, sky/lighting
+    Environment/            AGroundActor (done), AFoliageActor (done), buildings, sky/lighting
     UI/                     AOpenRideHUD (done), menus
     Core/                   AOpenRideGameMode (default pawn + HUD)
   OpenRide.Target.cs
@@ -53,6 +53,8 @@ docs/                       ARCHITECTURE, ASSETS, BLOCKERS, CYCLIST_PIPELINE (ri
 - `core/appearance/AppearanceModel.h`: header-only `RandomAppearance(seed)` (xorshift PRNG + HSV palette rules); used by `UCyclistAppearanceData::MakeRandom`.
 - `core/npc/NpcFollower.h`: header-only `StepNpcFollower` (bounded acceleration towards a target speed, bounded lateral drift towards a target lane); used by `ANPCCyclist`.
 - `core/race/RaceModel.h`: header-only `PlanSpawns` (seeded start offsets, speeds, preferred lanes, appearance seeds) and `DecideAvoidance` (free-lane overtaking, follow the blocker if boxed in); used by `ARaceManager`.
+- `core/foliage/FoliageScatter.h`: header-only `ScatterFoliage` (seeded jittered grid, density per m², road-clearance cull via `DistanceToLoop`, instance cap); used by `AFoliageActor`.
+- Tests: `cd core/foliage && cmake -S . -B build && cmake --build build && ./build/FoliageScatterTests`
 - Tests: `cd core/race && cmake -S . -B build && cmake --build build && ./build/RaceModelTests`
 - Tests: `cd core/npc && cmake -S . -B build && cmake --build build && ./build/NpcFollowerTests`
 - Tests: `cd core/appearance && cmake -S . -B build && cmake --build build && ./build/AppearanceModelTests`
@@ -75,6 +77,7 @@ docs/                       ARCHITECTURE, ASSETS, BLOCKERS, CYCLIST_PIPELINE (ri
 | `UCyclistAppearanceData` (done, uncompiled) | Cyclist/: `UDataAsset` with jersey/shorts/helmet/frame colours; `ApplyToRider()` / `ApplyToBike()` set the master-material vector params (`JerseyColor`, `ShortsColor`, `HelmetColor`, `FrameColor`) via dynamic material instances; `MakeRandom(Outer, Seed)` for NPCs |
 | `ANPCCyclist` (done, uncompiled) | NPC/: `AActor` with a rider `USkeletalMeshComponent`; spawns `BikeClass` (default `ABikeActor`) at BeginPlay, attaches the rider to the Saddle socket, optionally applies `UCyclistAppearanceData`; follows the circuit by distance at `TargetSpeedMps` with a smoothed `LaneOffsetMeters` (right of travel); `core/npc` model |
 | `ARaceManager` (done, uncompiled) | NPC/: spawns `NumNPCs` `NPCClass` actors (deferred spawn) with seeded speed/lane/start offset and `UCyclistAppearanceData::MakeRandom`; each tick (post-update) feeds every NPC's `TargetSpeedMps`/`LaneOffsetMeters` from `core/race` avoidance, treating the player as a lane-0 rider |
+| `AFoliageActor` (done, uncompiled) | Environment/: one `UHierarchicalInstancedStaticMeshComponent` of grass tufts scattered by `core/foliage` around the `Circuit` (road clearance, margin, seed); settings `DensityPerSqm`, `MaxInstances`, `CullDistanceMeters`; engine cone + grid material as placeholders; `RebuildFoliage()` |
 
 ## Conventions
 - Epic coding standard (UpperCamelCase, `F/U/A/E` prefixes).

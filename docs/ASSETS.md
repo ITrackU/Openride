@@ -6,3 +6,5 @@ Add one row per asset when it is introduced.
 | Asset / library | Author / source | License | Used for | Attribution required |
 |-----------------|-----------------|---------|----------|----------------------|
 | _(none yet)_    |                 |         |          |                      |
+
+- Foliage placeholders (`/Engine/BasicShapes/Cone`, `WorldGridMaterial`) are stock Unreal Engine content, referenced not redistributed; replace with a real grass mesh/material (log the licence here) on the PC side.

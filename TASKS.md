@@ -64,7 +64,8 @@
       Note: ARaceManager (NPC/) + core/race plan/avoidance model (tested via CMake); player treated as lane-0 rider; not compile-tested on the Pi.
 
 ## Phase 5: Environment
-- [ ] Procedural/instanced grass and foliage around the loop (HISM) with density settings.
+- [x] Procedural/instanced grass and foliage around the loop (HISM) with density settings.
+      Note: AFoliageActor (Environment/) + core/foliage jittered-grid scatter (tested via CMake); engine cone/grid placeholders; not compile-tested on the Pi.
 - [ ] Modular house/building generator or placeholder meshes placed around the circuit
       (several variants), with a data-driven placement actor.
 - [ ] Add sky/lighting setup (directional light, sky atmosphere, post-process) and a
