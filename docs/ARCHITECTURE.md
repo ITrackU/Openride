@@ -27,6 +27,7 @@ core/                       Engine-independent pure logic + unit tests
   bike/                     Wheel spin / steering / lean model for the bike (no UE)
   appearance/               Seeded random jersey/shorts/helmet/frame colours (no UE)
   npc/                      NPC speed + lane-offset follower model (no UE)
+  menu/                     Pause-menu selection + hit-test model (no UE)
   race/                     spawn planning + lane avoidance for the NPC field (no UE)
 docs/                       ARCHITECTURE, ASSETS, BLOCKERS, CYCLIST_PIPELINE (rider/bike asset spec), ANIMATION_BLUEPRINT_SPEC (ABP_Cyclist)
 ```
@@ -49,6 +50,8 @@ docs/                       ARCHITECTURE, ASSETS, BLOCKERS, CYCLIST_PIPELINE (ri
 - `core/movement/CyclistMovement.h`: header-only `StepMovement` speed model (throttle/brake/coast, configurable max speed); included directly by `ACyclistCharacter`.
 - `core/lap/LapTracker.h`: header-only `FLapTracker` (total distance, completed laps, lap/last/best time); fed by `ACyclistCharacter` from the unwrapped movement advance.
 - `core/settings/SettingsModel.h`: header-only settings model (resolution list + nearest match, quality levels 0..3 matching `sg.*`, `FKeyBindings` with swap-on-conflict rebinding); to be used by the settings menu (UI/).
+- `core/menu/MenuModel.h`: header-only vertical menu model (wrap-around selection skipping disabled items, centred button layout, pixel hit-test); used by the pause menu in `AOpenRideHUD`.
+- Tests: `cd core/menu && cmake -S . -B build && cmake --build build && ./build/MenuModelTests`
 - `core/anim/CyclistAnimModel.h`: header-only `StepAnimModel` derives cadence (fixed gearing), lean (banking from speed x yaw rate) and sprint (hysteresis) from motion; used by `UCyclistAnimInstance`.
 - `core/bike/BikeModel.h`: header-only `StepBikeModel` (wheel spin = v/r, bicycle-kinematics steering, banking lean); used by `ABikeActor`.
 - `core/appearance/AppearanceModel.h`: header-only `RandomAppearance(seed)` (xorshift PRNG + HSV palette rules); used by `UCyclistAppearanceData::MakeRandom`.
@@ -76,7 +79,7 @@ docs/                       ARCHITECTURE, ASSETS, BLOCKERS, CYCLIST_PIPELINE (ri
 | `ACircuitActor` (done, uncompiled) | Owns a `USplineComponent` built from circuit math; `GetTransformAtDistance(Meters)`; generates road + lane marking meshes |
 | `AGroundActor` (done, uncompiled) | Grass ground plane just under the road, fitted to the circuit bounds + margin; `UBoxComponent` playable bounds, `IsInsideBounds()`; placeholder grid material |
 | `ACyclistCharacter` (done, uncompiled) | `APawn` following the circuit by distance; Enhanced Input built in code (no .uasset): W/S/Up/Down move, mouse look, scroll zoom, `C` cycles chase / first-person / free-fly camera (`ECyclistCameraMode`); in free-fly the rider is parked and WASD+E/Q fly the camera along the view direction; speed from `core/movement` |
-| `AOpenRideHUD` (done, uncompiled) | `AHUD` canvas overlay (UI/): speed km/h, distance, lap counter, lap/last/best time; reads `ACyclistCharacter` getters |
+| `AOpenRideHUD` (done, uncompiled) | `AHUD` canvas overlay (UI/): speed km/h, distance, lap counter, lap/last/best time; reads `ACyclistCharacter` getters. Escape toggles a pause menu (Resume / Settings (disabled) / Quit) driven by mouse click or Up/Down/Enter; pauses the game via `SetGamePaused` |
 | `AOpenRideGameMode` (done, uncompiled) | Core/: default pawn = `ACyclistCharacter`, HUD = `AOpenRideHUD`; set as `GlobalDefaultGameMode` in DefaultEngine.ini |
 | `ABikeActor` (done, uncompiled) | Cyclist/: measures its own speed + yaw rate, runs `core/bike`; rolls `LeanPivot` (lean), exposes wheel angle / steer for `UBikeAnimInstance` (`ABP_Bike`); `AttachRider()` snaps rider to `Saddle`, `GetSocketWorldLocation()` for Hand*/Foot* IK targets |
 | `UCyclistAnimInstance` (done, uncompiled) | Cyclist/: measures owner speed + yaw rate, runs `core/anim`, exposes Speed, Cadence, Lean, bSprinting, bPedaling to `ABP_Cyclist` (spec in docs/ANIMATION_BLUEPRINT_SPEC.md) |

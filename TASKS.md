@@ -80,7 +80,8 @@
         Note: core/settings/SettingsModel.h (tested via CMake).
   - [x] UGameUserSettings-backed apply/save layer (resolution, sg.* quality) in Source/OpenRide/UI.
         Note: UOpenRideSettingsLibrary (UI/) wraps UGameUserSettings using core/settings; not compile-tested on the Pi.
-  - [ ] Pause menu (Escape): UMG-free Slate/canvas widget with Resume / Settings / Quit.
+  - [x] Pause menu (Escape): UMG-free Slate/canvas widget with Resume / Settings / Quit.
+        Note: canvas menu in AOpenRideHUD using core/menu/MenuModel.h (tested via CMake); Settings entry is disabled until the settings screen lands; not compile-tested on the Pi.
   - [ ] Settings screen: resolution + quality cycle buttons, key rebinding via the core model.
 - [ ] Automated checks: a GitHub Actions workflow running the pure-logic unit tests and
       markdown/link lint (no UE build in CI).

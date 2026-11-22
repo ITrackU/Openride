@@ -5,6 +5,7 @@ Long-term goal: connect a Bluetooth smart home trainer and ride through a render
 
 ## Current phase: engine foundation ("viewer mode")
 - Input is keyboard + mouse only. No Bluetooth trainer integration yet.
+- Press `Esc` to open the pause menu (Resume / Quit; Settings is coming next). Navigate with the mouse or Up/Down + Enter.
 - No Cesium, Cesium Ion or external map/terrain plugins.
 - Test world: one closed ~400 m stadium-shaped circuit.
 - Goal of the phase: ride a detailed cyclist around the loop, with NPC cyclists using the
