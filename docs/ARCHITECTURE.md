@@ -40,6 +40,8 @@ docs/                       ARCHITECTURE, ASSETS, BLOCKERS
   `ACircuitActor::RebuildRoadMesh()` copies them into two `UProceduralMeshComponent`s (asphalt, markings: 2 solid edge lines + dashed centre line); `RoadMeshBridge.cpp` compiles the core source into the module.
   Materials are placeholders (engine WorldGridMaterial) until real assets are added; UV.V is in metres.
 - Tests: `cd core/road && cmake -S . -B build && cmake --build build && ./build/RoadMeshTests`
+- `core/movement/CyclistMovement.h`: header-only `StepMovement` speed model (throttle/brake/coast, configurable max speed); included directly by `ACyclistCharacter`.
+- Tests: `cd core/movement && cmake -S . -B build && cmake --build build && ./build/CyclistMovementTests`
 - Tests: `cd core/circuit && cmake -S . -B build && cmake --build build && ./build/StadiumCircuitTests`
 
 ## Class overview (planned)

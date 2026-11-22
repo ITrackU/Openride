@@ -179,8 +179,19 @@ void ACyclistCharacter::Tick(float DeltaSeconds)
 		return;
 	}
 
-	// Placeholder: constant speed while a key is held. Replaced by the movement model task.
-	DistanceMeters += MoveAxis * PlaceholderSpeedMps * DeltaSeconds;
+	OpenRideCore::FCyclistMovementParams Params;
+	Params.MaxSpeed = MaxSpeedMps;
+	Params.Acceleration = AccelerationMps2;
+	Params.BrakeDecel = BrakeDecelMps2;
+	Params.CoastDecel = CoastDecelMps2;
+
+	// Only the speed/advance is taken from the model; wrapping is done below on the
+	// circuit length, so the model's own Distance is reset every frame.
+	OpenRideCore::FCyclistMovementState State;
+	State.Speed = SpeedMps;
+	OpenRideCore::StepMovement(State, Params, FMath::Max(MoveAxis, 0.f), FMath::Max(-MoveAxis, 0.f), DeltaSeconds);
+	SpeedMps = static_cast<float>(State.Speed);
+	DistanceMeters += static_cast<float>(State.Distance);
 
 	// Keep the distance in [0, L) so the value stays readable on a closed loop.
 	const float Length = Circuit->GetLoopLengthMeters();

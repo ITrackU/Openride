@@ -31,8 +31,9 @@
 - [x] Create ACyclistCharacter (or Pawn) with Enhanced Input: WASD/arrows to move along
       the circuit, mouse look, scroll to zoom camera, key to toggle camera modes.
       Note: Source/OpenRide/Player/CyclistCharacter.{h,cpp} (APawn; input actions/mapping created in code; placeholder constant speed); not compile-tested on the Pi.
-- [ ] Implement simple cycling movement model: speed accelerate/decelerate/brake with
+- [x] Implement simple cycling movement model: speed accelerate/decelerate/brake with
       configurable max speed, constrained to the circuit spline (follow by distance).
+      Note: core/movement (header-only, tested via CMake) drives ACyclistCharacter; W accelerates, S brakes, release coasts; not compile-tested on the Pi.
 - [ ] Camera system: third-person chase cam, first-person cam, free-fly debug cam,
       switchable at runtime.
 - [ ] Create a minimal HUD: speed (km/h), distance, lap counter, lap time.

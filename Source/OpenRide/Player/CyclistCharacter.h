@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "InputActionValue.h"
+#include "../../../core/movement/CyclistMovement.h"
 #include "CyclistCharacter.generated.h"
 
 class ACircuitActor;
@@ -15,8 +16,8 @@ class UInputMappingContext;
 /**
  * Viewer-mode player pawn. Moves along the circuit by distance (not by physics),
  * with mouse look, scroll zoom and a camera-mode toggle.
- * The real speed model (accelerate/brake) comes in the next task; here a simple
- * constant-speed placeholder keeps the pawn testable.
+ * Speed comes from the engine-independent OpenRideCore::StepMovement model
+ * (W/Up pedals, S/Down brakes, releasing coasts).
  *
  * It is a APawn rather than ACharacter: we never need CharacterMovement because
  * the circuit spline dictates the position.
@@ -37,9 +38,25 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Circuit")
 	float DistanceMeters = 0.f;
 
-	/** Placeholder speed (m/s) while a move key is held; replaced by the movement model task. */
+	/** Top speed in m/s (14 = ~50 km/h). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement", meta = (ClampMin = "0.1"))
+	float MaxSpeedMps = 14.f;
+
+	/** Acceleration in m/s^2 at standstill; tapers off towards max speed. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement", meta = (ClampMin = "0.0"))
-	float PlaceholderSpeedMps = 8.f;
+	float AccelerationMps2 = 2.f;
+
+	/** Deceleration in m/s^2 while braking. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement", meta = (ClampMin = "0.0"))
+	float BrakeDecelMps2 = 6.f;
+
+	/** Deceleration in m/s^2 while coasting (rolling + air drag). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement", meta = (ClampMin = "0.0"))
+	float CoastDecelMps2 = 0.4f;
+
+	/** Current speed in m/s (read-only, for HUD/animation). */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
+	float SpeedMps = 0.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera", meta = (ClampMin = "50.0"))
 	float MinArmLength = 150.f;
