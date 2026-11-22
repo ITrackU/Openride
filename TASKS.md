@@ -28,8 +28,9 @@
       Note: AGroundActor (Environment/) fits a plane + playable-bounds box to the circuit; placeholder grid material for grass; not compile-tested on the Pi.
 
 ## Phase 2: Player and camera (viewer mode)
-- [ ] Create ACyclistCharacter (or Pawn) with Enhanced Input: WASD/arrows to move along
+- [x] Create ACyclistCharacter (or Pawn) with Enhanced Input: WASD/arrows to move along
       the circuit, mouse look, scroll to zoom camera, key to toggle camera modes.
+      Note: Source/OpenRide/Player/CyclistCharacter.{h,cpp} (APawn; input actions/mapping created in code; placeholder constant speed); not compile-tested on the Pi.
 - [ ] Implement simple cycling movement model: speed accelerate/decelerate/brake with
       configurable max speed, constrained to the circuit spline (follow by distance).
 - [ ] Camera system: third-person chase cam, first-person cam, free-fly debug cam,
