@@ -22,3 +22,5 @@ Saved/
 claude-openride.log
 __pycache__/
 *.pyc
+# Windows build output (scripts/build-win.ps1)
+build.log

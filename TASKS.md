@@ -53,4 +53,5 @@ Files exist, encoding is plain ASCII, so the module include path is the suspect
   - Documented manual Windows check in docs/BUILD_CHECK.md (free runners can't run UE); not run, needs Windows.
 - [x] Update `CLAUDE.md`: the Linux automation cannot compile the Unreal module; any change under `Source/` must be listed for a manual Windows build check.
   - Added to CLAUDE.md environment notes; points to docs/BUILD_CHECK.md.
-- [ ] Add `build.log` to `.gitignore`.
+- [x] Add `build.log` to `.gitignore`.
+  - Added under a comment; `scripts/build-win.ps1` writes `build.log` at the repo root. No `Source/` change.
