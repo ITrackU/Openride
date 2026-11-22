@@ -32,8 +32,8 @@ namespace OpenRideCore
     // Rect of button Index in a column of Count buttons centred on the screen.
     inline FRect ButtonRect(const FMenuLayout& L, int Count, int Index)
     {
-        const float Total = Count * L.ButtonH + (Count > 0 ? (Count - 1) * L.Gap : 0.f);
-        return { (L.ScreenW - L.ButtonW) * 0.5f, (L.ScreenH - Total) * 0.5f + Index * (L.ButtonH + L.Gap),
+        const float Total = static_cast<float>(Count) * L.ButtonH + (Count > 0 ? static_cast<float>(Count - 1) * L.Gap : 0.f);
+        return { (L.ScreenW - L.ButtonW) * 0.5f, (L.ScreenH - Total) * 0.5f + static_cast<float>(Index) * (L.ButtonH + L.Gap),
                  L.ButtonW, L.ButtonH };
     }
 

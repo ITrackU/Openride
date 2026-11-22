@@ -69,7 +69,6 @@ namespace OpenRideCore
         const double Side = SignedArea(Loop) >= 0.0 ? -1.0 : 1.0; // sign applied to the left normal (-Ty, Tx)
 
         FSeededRandom Rng(P.Seed);
-        auto Lerp = [&](double A, double B) { return A + (B - A) * Rng.Next01(); };
 
         double Carry = 0.0; // distance already walked into the current segment's successor
         const size_t N = Loop.size();
