@@ -1,92 +1,43 @@
-# OpenRide: engine tasks (unreal branch)
+## Phase B: Unreal Engine 5.8 build investigation (Windows)
 
-## Phase 0: Foundation
-- [x] Create docs/ARCHITECTURE.md: module layout, class overview, coding conventions,
-      and a short roadmap. Create docs/ASSETS.md (license tracking) and docs/BLOCKERS.md.
-      Note: created the three docs in docs/; layout includes a planned engine-independent core/ folder.
-- [x] Scaffold a UE5 C++ project: OpenRide.uproject, Source/OpenRide module
-      (Build.cs, Target.cs files, module class), .gitignore for Unreal, .gitattributes
-      for Git LFS on binary assets (uasset, umap, fbx, png, wav).
-      Note: scaffold added (uproject for UE 5.4, module, targets, Config, .gitignore, LFS attributes); not compile-tested on the Pi.
-- [x] Add README.md (vision, current phase, build instructions for a PC, license choice
-      suggestion with rationale) and CONTRIBUTING.md.
-      Note: README.md (MIT suggested, no LICENSE file yet) and CONTRIBUTING.md added.
+Context: `OpenRideEditor Win64 Development` fails with
+`CircuitActor.cpp(1,1): fatal error C1083: Cannot open include file: 'Circuit/CircuitActor.h'`.
+Files exist, encoding is plain ASCII, so the module include path is the suspect
+(`BuildSettingsVersion.V7` + `EngineIncludeOrderVersion.Latest` no longer add the module root).
 
-## Phase 1: Circuit (400 m loop)
-- [x] Write an engine-independent circuit math module (C++ or Python prototype with tests):
-      generate a closed stadium-shaped loop of total length 400 m (two straights + two
-      semicircles), sampling points with position, tangent, and distance along track.
-      Include unit tests verifying total length = 400 m +/- 0.1 m.
-      Note: C++17 module in core/circuit (R=30 m, straights ~105.75 m); tests pass locally via CMake.
-- [x] Create ACircuitActor in UE using a USplineComponent built from that math, with
-      configurable width, closed loop, and a function GetTransformAtDistance(float Meters).
-      Note: Source/OpenRide/Circuit/CircuitActor.{h,cpp} added (wraps core math via CircuitCoreBridge.cpp); not compile-tested on the Pi.
-- [x] Generate road mesh along the spline (procedural mesh or spline mesh components)
-      with a basic road material placeholder and lane markings.
-      Note: core/road geometry (tested via CMake) feeds two ProceduralMesh components in ACircuitActor; placeholder grid material; not compile-tested on the Pi.
-- [x] Add ground plane/landscape placeholder with a grass material and bounds around the loop.
-      Note: AGroundActor (Environment/) fits a plane + playable-bounds box to the circuit; placeholder grid material for grass; not compile-tested on the Pi.
+### Diagnose
+- [ ] Reproduce on Windows: run Build.bat for OpenRideEditor and save the full output to `build.log`; record the first error only (later errors may be cascades).
+- [ ] Read `%LOCALAPPDATA%\UnrealBuildTool\Log.txt` and extract the actual `/I` include paths passed to cl.exe for `Module.OpenRide.cpp`; confirm whether `Source/OpenRide` is present.
+- [ ] Check `Intermediate/Build/Win64/.../OpenRide/*.rsp` response files to confirm the same include list.
+- [ ] Confirm `OpenRideTarget` / `OpenRideEditorTarget` settings (`DefaultBuildSettings`, `IncludeOrderVersion`) against the UE 5.8 defaults for a freshly generated C++ project; note any differences.
+- [ ] Generate a throwaway blank UE 5.8 C++ project and compare its `.Build.cs` and Target.cs files with ours.
 
-## Phase 2: Player and camera (viewer mode)
-- [x] Create ACyclistCharacter (or Pawn) with Enhanced Input: WASD/arrows to move along
-      the circuit, mouse look, scroll to zoom camera, key to toggle camera modes.
-      Note: Source/OpenRide/Player/CyclistCharacter.{h,cpp} (APawn; input actions/mapping created in code; placeholder constant speed); not compile-tested on the Pi.
-- [x] Implement simple cycling movement model: speed accelerate/decelerate/brake with
-      configurable max speed, constrained to the circuit spline (follow by distance).
-      Note: core/movement (header-only, tested via CMake) drives ACyclistCharacter; W accelerates, S brakes, release coasts; not compile-tested on the Pi.
-- [x] Camera system: third-person chase cam, first-person cam, free-fly debug cam,
-      switchable at runtime.
-      Note: ECyclistCameraMode in ACyclistCharacter; `C` cycles Chase/FirstPerson/FreeFly (WASD+E/Q fly, rider parked); not compile-tested on the Pi.
-- [x] Create a minimal HUD: speed (km/h), distance, lap counter, lap time.
-      Note: AOpenRideHUD (canvas) + AOpenRideGameMode + core/lap FLapTracker (tested via CMake); not compile-tested on the Pi.
+### Fix include paths
+- [ ] Add `PublicIncludePaths.Add(ModuleDirectory);` to `OpenRide.Build.cs`.
+- [ ] Rebuild and verify the C1083 error for `Circuit/CircuitActor.h` is gone.
+- [ ] Grep all `Source/OpenRide/**` for `#include "<Folder>/..."` and confirm each resolves from the module root.
+- [ ] Decide on a convention (module-root-relative includes vs. same-folder includes) and document it in `CLAUDE.md`.
 
-## Phase 3: Cyclist and bike models
-- [x] Define the cyclist asset pipeline in docs/: skeletal mesh requirements, skeleton
-      naming, animation list (idle, pedaling cadence-driven, coasting, standing sprint),
-      and how rider + bike attach via sockets.
-      Note: docs/CYCLIST_PIPELINE.md added (meshes, skeletons, sockets, animations, anim input contract); docs only.
-- [x] Implement a cadence-driven pedaling animation system in C++ (AnimInstance exposing
-      Cadence, Speed, Lean) with an Animation Blueprint spec documented for the PC side.
-      Note: UCyclistAnimInstance (Cyclist/) + core/anim model (tested via CMake) + docs/ANIMATION_BLUEPRINT_SPEC.md; not compile-tested on the Pi.
-- [x] Create ABikeActor with wheel rotation tied to speed, steering/lean visual, and
-      sockets for rider hands/feet/saddle.
-      Note: ABikeActor + UBikeAnimInstance (Cyclist/) + core/bike model (tested via CMake) + ABP_Bike spec; not compile-tested on the Pi.
-- [x] Add a customization data asset (UCyclistAppearanceData): jersey color, helmet, bike
-      color, so every cyclist is the same base model with different appearance.
-      Note: UCyclistAppearanceData (Cyclist/) applies colours via MIDs + core/appearance seeded randomiser (tested via CMake); not compile-tested on the Pi.
+### Engine-independent core (repo-root `core/`)
+- [ ] Find every include in `Source/OpenRide` that reaches into `core/` (e.g. `FStadiumCircuit`) and list the paths used.
+- [ ] Add `core/` to the module include paths in `OpenRide.Build.cs` using `System.IO.Path.GetFullPath(Path.Combine(ModuleDirectory, "../../core"))`.
+- [ ] Verify the core headers compile under MSVC with UE's flags (check for `/WX`, shadowing, `check`/`min`/`max` macro clashes, RTTI/exceptions assumptions).
+- [ ] Make sure core sources are either header-only or compiled into the module (decide: `core/*.cpp` pulled in via Build.cs vs. a separate static library).
 
-## Phase 4: NPC cyclists
-- [x] Create ANPCCyclist reusing the same rider+bike classes, following the circuit spline
-      at a configurable target speed with slight lane offset.
-      Note: ANPCCyclist (NPC/) + core/npc follower model (tested via CMake); rider mesh/ABP and bike class assigned in a Blueprint subclass; not compile-tested on the Pi.
-- [x] Spawner/manager (ARaceManager): spawn N NPCs with randomized appearance, speeds,
-      and start offsets. Basic overtaking/avoidance via lane offset.
-      Note: ARaceManager (NPC/) + core/race plan/avoidance model (tested via CMake); player treated as lane-0 rider; not compile-tested on the Pi.
+### Remaining build errors
+- [ ] Re-run the build after the fixes above; fix each new error one at a time, committing per fix.
+- [ ] Check `CircuitCoreBridge.cpp` and `RoadMeshBridge.cpp` (very small files) compile and are not empty stubs that break linking.
+- [ ] Verify `ProceduralMeshComponent` plugin is enabled and its module name matches in `.uproject` and Build.cs under UE 5.8 (module/plugin renames happen between versions).
+- [ ] Verify `EnhancedInput`, `UMG`, `Slate`, `SlateCore` dependencies resolve in 5.8.
+- [ ] Build the `OpenRide` Game target (not just Editor) for Win64 Development and confirm it succeeds.
 
-## Phase 5: Environment
-- [x] Procedural/instanced grass and foliage around the loop (HISM) with density settings.
-      Note: AFoliageActor (Environment/) + core/foliage jittered-grid scatter (tested via CMake); engine cone/grid placeholders; not compile-tested on the Pi.
-- [x] Modular house/building generator or placeholder meshes placed around the circuit
-      (several variants), with a data-driven placement actor.
-      Note: ABuildingPlacerActor + UBuildingSetData (Environment/) + core/buildings placement (tested via CMake); cube placeholders, 3 default variants; not compile-tested on the Pi.
-- [x] Add sky/lighting setup (directional light, sky atmosphere, post-process) and a
-      day-time parameter.
-      Note: ASkyLightingActor (Environment/) + core/sky day-time model (tested via CMake); one TimeOfDayHours property drives sun, ambient, exposure; not compile-tested on the Pi.
+### Environment noise (non-blocking, but check)
+- [ ] Investigate `UbaSessionServer ... Access is denied` on `C:\ProgramData\Epic\UnrealBuildAccelerator`; try running the build once as Administrator or clearing the `sessions`/`cas` folders; confirm it does not affect the build result.
+- [ ] Confirm the VS 2022 toolchain (14.44) and Windows 10.0.22621 SDK match what UE 5.8 officially requires; install the recommended workloads from `.vsconfig` if not.
+- [ ] Regenerate project files (`OpenRide.uproject` -> Generate Visual Studio project files) and confirm the `.sln` builds from the IDE too.
 
-## Phase 6: Polish and tooling
-- [x] Settings menu (resolution, graphics quality, key bindings) and pause menu.
-      Split into sub-tasks:
-  - [x] Engine-independent settings model (resolutions, quality levels, key-binding table with conflict swap).
-        Note: core/settings/SettingsModel.h (tested via CMake).
-  - [x] UGameUserSettings-backed apply/save layer (resolution, sg.* quality) in Source/OpenRide/UI.
-        Note: UOpenRideSettingsLibrary (UI/) wraps UGameUserSettings using core/settings; not compile-tested on the Pi.
-  - [x] Pause menu (Escape): UMG-free Slate/canvas widget with Resume / Settings / Quit.
-        Note: canvas menu in AOpenRideHUD using core/menu/MenuModel.h (tested via CMake); Settings entry is disabled until the settings screen lands; not compile-tested on the Pi.
-  - [x] Settings screen: resolution + quality cycle buttons, key rebinding via the core model.
-        Note: settings screen in AOpenRideHUD + ACyclistCharacter::ApplyKeyBindings; key bindings are session-only (not persisted); not compile-tested on the Pi.
-- [x] Automated checks: a GitHub Actions workflow running the pure-logic unit tests and
-      markdown/link lint (no UE build in CI).
-      Note: .github/workflows/ci.yml + scripts/run_core_tests.sh (all 14 core modules pass locally); markdownlint/lychee steps not run locally, so lint findings may need a first-pass cleanup.
-- [x] Update README with screenshots section, roadmap, and next-phase plan
-      (Bluetooth trainer, then map generation).
-      Note: README has Screenshots (placeholder until a PC build exists) and Roadmap sections; docs only.
+### Prevent regressions
+- [ ] Add a `scripts/build-win.ps1` that runs the exact Build.bat command, tees to `build.log`, and prints only error lines.
+- [ ] Add a CI job (GitHub Actions, Windows runner with UE or a documented manual step) or a documented local check so the Unreal module is compiled before merge.
+- [ ] Update `CLAUDE.md`: the Linux automation cannot compile the Unreal module; any change under `Source/` must be listed for a manual Windows build check.
+- [ ] Add `build.log` to `.gitignore`.
