@@ -45,8 +45,9 @@
       naming, animation list (idle, pedaling cadence-driven, coasting, standing sprint),
       and how rider + bike attach via sockets.
       Note: docs/CYCLIST_PIPELINE.md added (meshes, skeletons, sockets, animations, anim input contract); docs only.
-- [ ] Implement a cadence-driven pedaling animation system in C++ (AnimInstance exposing
+- [x] Implement a cadence-driven pedaling animation system in C++ (AnimInstance exposing
       Cadence, Speed, Lean) with an Animation Blueprint spec documented for the PC side.
+      Note: UCyclistAnimInstance (Cyclist/) + core/anim model (tested via CMake) + docs/ANIMATION_BLUEPRINT_SPEC.md; not compile-tested on the Pi.
 - [ ] Create ABikeActor with wheel rotation tied to speed, steering/lean visual, and
       sockets for rider hands/feet/saddle.
 - [ ] Add a customization data asset (UCyclistAppearanceData): jersey color, helmet, bike
