@@ -48,6 +48,7 @@ docs/                       ARCHITECTURE, ASSETS, BLOCKERS, CYCLIST_PIPELINE (ri
 - Tests: `cd core/road && cmake -S . -B build && cmake --build build && ./build/RoadMeshTests`
 - `core/movement/CyclistMovement.h`: header-only `StepMovement` speed model (throttle/brake/coast, configurable max speed); included directly by `ACyclistCharacter`.
 - `core/lap/LapTracker.h`: header-only `FLapTracker` (total distance, completed laps, lap/last/best time); fed by `ACyclistCharacter` from the unwrapped movement advance.
+- `core/settings/SettingsModel.h`: header-only settings model (resolution list + nearest match, quality levels 0..3 matching `sg.*`, `FKeyBindings` with swap-on-conflict rebinding); to be used by the settings menu (UI/).
 - `core/anim/CyclistAnimModel.h`: header-only `StepAnimModel` derives cadence (fixed gearing), lean (banking from speed x yaw rate) and sprint (hysteresis) from motion; used by `UCyclistAnimInstance`.
 - `core/bike/BikeModel.h`: header-only `StepBikeModel` (wheel spin = v/r, bicycle-kinematics steering, banking lean); used by `ABikeActor`.
 - `core/appearance/AppearanceModel.h`: header-only `RandomAppearance(seed)` (xorshift PRNG + HSV palette rules); used by `UCyclistAppearanceData::MakeRandom`.
@@ -65,6 +66,7 @@ docs/                       ARCHITECTURE, ASSETS, BLOCKERS, CYCLIST_PIPELINE (ri
 - Tests: `cd core/bike && cmake -S . -B build && cmake --build build && ./build/BikeModelTests`
 - Tests: `cd core/anim && cmake -S . -B build && cmake --build build && ./build/CyclistAnimModelTests`
 - Tests: `cd core/lap && cmake -S . -B build && cmake --build build && ./build/LapTrackerTests`
+- Tests: `cd core/settings && cmake -S . -B build && cmake --build build && ./build/SettingsModelTests`
 - Tests: `cd core/movement && cmake -S . -B build && cmake --build build && ./build/CyclistMovementTests`
 - Tests: `cd core/circuit && cmake -S . -B build && cmake --build build && ./build/StadiumCircuitTests`
 

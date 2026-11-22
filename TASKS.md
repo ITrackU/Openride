@@ -75,6 +75,12 @@
 
 ## Phase 6: Polish and tooling
 - [ ] Settings menu (resolution, graphics quality, key bindings) and pause menu.
+      Split into sub-tasks:
+  - [x] Engine-independent settings model (resolutions, quality levels, key-binding table with conflict swap).
+        Note: core/settings/SettingsModel.h (tested via CMake).
+  - [ ] UGameUserSettings-backed apply/save layer (resolution, sg.* quality) in Source/OpenRide/UI.
+  - [ ] Pause menu (Escape): UMG-free Slate/canvas widget with Resume / Settings / Quit.
+  - [ ] Settings screen: resolution + quality cycle buttons, key rebinding via the core model.
 - [ ] Automated checks: a GitHub Actions workflow running the pure-logic unit tests and
       markdown/link lint (no UE build in CI).
 - [ ] Update README with screenshots section, roadmap, and next-phase plan
