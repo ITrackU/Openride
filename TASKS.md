@@ -78,7 +78,8 @@
       Split into sub-tasks:
   - [x] Engine-independent settings model (resolutions, quality levels, key-binding table with conflict swap).
         Note: core/settings/SettingsModel.h (tested via CMake).
-  - [ ] UGameUserSettings-backed apply/save layer (resolution, sg.* quality) in Source/OpenRide/UI.
+  - [x] UGameUserSettings-backed apply/save layer (resolution, sg.* quality) in Source/OpenRide/UI.
+        Note: UOpenRideSettingsLibrary (UI/) wraps UGameUserSettings using core/settings; not compile-tested on the Pi.
   - [ ] Pause menu (Escape): UMG-free Slate/canvas widget with Resume / Settings / Quit.
   - [ ] Settings screen: resolution + quality cycle buttons, key rebinding via the core model.
 - [ ] Automated checks: a GitHub Actions workflow running the pure-logic unit tests and

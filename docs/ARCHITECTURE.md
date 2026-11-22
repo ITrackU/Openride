@@ -86,6 +86,7 @@ docs/                       ARCHITECTURE, ASSETS, BLOCKERS, CYCLIST_PIPELINE (ri
 | `AFoliageActor` (done, uncompiled) | Environment/: one `UHierarchicalInstancedStaticMeshComponent` of grass tufts scattered by `core/foliage` around the `Circuit` (road clearance, margin, seed); settings `DensityPerSqm`, `MaxInstances`, `CullDistanceMeters`; engine cone + grid material as placeholders; `RebuildFoliage()` |
 | `ABuildingPlacerActor` (done, uncompiled) | Environment/: places buildings outside the `Circuit` via `core/buildings`; variants (mesh, material, width/depth/height ranges, weight) come from a `UBuildingSetData` data asset (3 placeholder variants if none assigned); one `UInstancedStaticMeshComponent` per variant, engine cube + grid material as placeholders; `RebuildBuildings()` |
 | `ASkyLightingActor` (done, uncompiled) | Environment/: directional sun + `USkyAtmosphereComponent` + real-time-capture sky light + height fog + unbound post-process (auto-exposure); `TimeOfDayHours` (0..24) drives sun rotation/colour/ambient/exposure via `core/sky`; `SetTimeOfDay()`, optional `TimeSpeedHoursPerSecond` to run the clock |
+| `UOpenRideSettingsLibrary` (done, uncompiled) | UI/: `UBlueprintFunctionLibrary` over `UGameUserSettings`: offered resolutions (from `core/settings`), `ApplyResolution`, `ApplyQualityLevel` (0..3 -> all `sg.*` groups), `GetQualityLevel`, `SaveSettings`, `LoadAndApplySavedSettings`; used by the upcoming settings screen |
 
 ## Conventions
 - Epic coding standard (UpperCamelCase, `F/U/A/E` prefixes).
