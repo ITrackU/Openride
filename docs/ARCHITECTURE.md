@@ -14,7 +14,8 @@ Source/
     NPC/                    ANPCCyclist, ARaceManager
     Player/                 ACyclistCharacter (viewer-mode pawn, input, camera)
     Environment/            AGroundActor (done), grass, buildings, sky/lighting
-    UI/                     HUD, menus
+    UI/                     AOpenRideHUD (done), menus
+    Core/                   AOpenRideGameMode (default pawn + HUD)
   OpenRide.Target.cs
   OpenRideEditor.Target.cs
 Config/                     DefaultEngine/Game/Input .ini (Enhanced Input enabled)
@@ -41,6 +42,8 @@ docs/                       ARCHITECTURE, ASSETS, BLOCKERS
   Materials are placeholders (engine WorldGridMaterial) until real assets are added; UV.V is in metres.
 - Tests: `cd core/road && cmake -S . -B build && cmake --build build && ./build/RoadMeshTests`
 - `core/movement/CyclistMovement.h`: header-only `StepMovement` speed model (throttle/brake/coast, configurable max speed); included directly by `ACyclistCharacter`.
+- `core/lap/LapTracker.h`: header-only `FLapTracker` (total distance, completed laps, lap/last/best time); fed by `ACyclistCharacter` from the unwrapped movement advance.
+- Tests: `cd core/lap && cmake -S . -B build && cmake --build build && ./build/LapTrackerTests`
 - Tests: `cd core/movement && cmake -S . -B build && cmake --build build && ./build/CyclistMovementTests`
 - Tests: `cd core/circuit && cmake -S . -B build && cmake --build build && ./build/StadiumCircuitTests`
 
@@ -50,6 +53,8 @@ docs/                       ARCHITECTURE, ASSETS, BLOCKERS
 | `ACircuitActor` (done, uncompiled) | Owns a `USplineComponent` built from circuit math; `GetTransformAtDistance(Meters)`; generates road + lane marking meshes |
 | `AGroundActor` (done, uncompiled) | Grass ground plane just under the road, fitted to the circuit bounds + margin; `UBoxComponent` playable bounds, `IsInsideBounds()`; placeholder grid material |
 | `ACyclistCharacter` (done, uncompiled) | `APawn` following the circuit by distance; Enhanced Input built in code (no .uasset): W/S/Up/Down move, mouse look, scroll zoom, `C` cycles chase / first-person / free-fly camera (`ECyclistCameraMode`); in free-fly the rider is parked and WASD+E/Q fly the camera along the view direction; speed from `core/movement` |
+| `AOpenRideHUD` (done, uncompiled) | `AHUD` canvas overlay (UI/): speed km/h, distance, lap counter, lap/last/best time; reads `ACyclistCharacter` getters |
+| `AOpenRideGameMode` (done, uncompiled) | Core/: default pawn = `ACyclistCharacter`, HUD = `AOpenRideHUD`; set as `GlobalDefaultGameMode` in DefaultEngine.ini |
 | `ABikeActor` | Wheels, steering/lean visuals, sockets for hands/feet/saddle |
 | `UCyclistAnimInstance` | Exposes Cadence, Speed, Lean to the Animation Blueprint |
 | `UCyclistAppearanceData` | Data asset: jersey, helmet, bike colour |

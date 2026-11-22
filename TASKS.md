@@ -37,7 +37,8 @@
 - [x] Camera system: third-person chase cam, first-person cam, free-fly debug cam,
       switchable at runtime.
       Note: ECyclistCameraMode in ACyclistCharacter; `C` cycles Chase/FirstPerson/FreeFly (WASD+E/Q fly, rider parked); not compile-tested on the Pi.
-- [ ] Create a minimal HUD: speed (km/h), distance, lap counter, lap time.
+- [x] Create a minimal HUD: speed (km/h), distance, lap counter, lap time.
+      Note: AOpenRideHUD (canvas) + AOpenRideGameMode + core/lap FLapTracker (tested via CMake); not compile-tested on the Pi.
 
 ## Phase 3: Cyclist and bike models
 - [ ] Define the cyclist asset pipeline in docs/: skeletal mesh requirements, skeleton

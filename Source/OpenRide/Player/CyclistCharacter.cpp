@@ -250,6 +250,8 @@ void ACyclistCharacter::Tick(float DeltaSeconds)
 
 	// Keep the distance in [0, L) so the value stays readable on a closed loop.
 	const float Length = Circuit->GetLoopLengthMeters();
+	// Laps are counted from the unwrapped advance, not the wrapped distance, so no crossing is missed.
+	Laps.Step(State.Distance, DeltaSeconds, Length);
 	if (Length > KINDA_SMALL_NUMBER)
 	{
 		DistanceMeters = FMath::Fmod(DistanceMeters, Length);

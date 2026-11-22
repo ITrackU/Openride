@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "InputActionValue.h"
+#include "../../../core/lap/LapTracker.h"
 #include "../../../core/movement/CyclistMovement.h"
 #include "CyclistCharacter.generated.h"
 
@@ -67,6 +68,26 @@ public:
 	/** Current speed in m/s (read-only, for HUD/animation). */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
 	float SpeedMps = 0.f;
+
+	/** Total metres ridden since start (HUD). */
+	UFUNCTION(BlueprintPure, Category = "Lap")
+	float GetTotalDistanceMeters() const { return static_cast<float>(Laps.TotalDistance); }
+
+	/** Completed laps. */
+	UFUNCTION(BlueprintPure, Category = "Lap")
+	int32 GetLapCount() const { return Laps.Laps; }
+
+	/** Seconds on the current lap. */
+	UFUNCTION(BlueprintPure, Category = "Lap")
+	float GetLapTimeSeconds() const { return static_cast<float>(Laps.LapTime); }
+
+	/** Last completed lap in seconds, or a negative value if none yet. */
+	UFUNCTION(BlueprintPure, Category = "Lap")
+	float GetLastLapTimeSeconds() const { return static_cast<float>(Laps.LastLapTime); }
+
+	/** Best lap in seconds, or a negative value if none yet. */
+	UFUNCTION(BlueprintPure, Category = "Lap")
+	float GetBestLapTimeSeconds() const { return static_cast<float>(Laps.BestLapTime); }
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera", meta = (ClampMin = "50.0"))
 	float MinArmLength = 150.f;
@@ -136,6 +157,7 @@ protected:
 	UPROPERTY() TObjectPtr<UInputAction> ToggleCameraAction;
 
 private:
+	OpenRideCore::FLapTracker Laps;
 	ECyclistCameraMode CameraMode = ECyclistCameraMode::Chase;
 	/** Forward/back input in [-1, 1] captured this frame. */
 	float MoveAxis = 0.f;
