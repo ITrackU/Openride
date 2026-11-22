@@ -112,6 +112,8 @@ docs/                       ARCHITECTURE, ASSETS, BLOCKERS, CYCLIST_PIPELINE (ri
 
 ## Includes reaching into `core/`
 
+`OpenRide.Build.cs` also adds `<repo>/core` to `PublicIncludePaths`, so `"circuit/StadiumCircuit.h"` style includes will resolve; existing includes keep the relative form until migrated.
+
 All use the relative form `../../../core/<dir>/<File>` (from `Source/OpenRide/<Folder>/`):
 
 - Headers: `lap/LapTracker.h`, `settings/SettingsModel.h`, `movement/CyclistMovement.h` (CyclistCharacter.h);

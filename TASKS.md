@@ -24,7 +24,8 @@ Files exist, encoding is plain ASCII, so the module include path is the suspect
 ### Engine-independent core (repo-root `core/`)
 - [x] Find every include in `Source/OpenRide` that reaches into `core/` (e.g. `FStadiumCircuit`) and list the paths used.
   - 17 includes, all `../../../core/<dir>/<File>`; list in docs/ARCHITECTURE.md. Note: `CircuitCoreBridge.cpp` and `RoadMeshBridge.cpp` `#include` core `.cpp` files directly.
-- [ ] Add `core/` to the module include paths in `OpenRide.Build.cs` using `System.IO.Path.GetFullPath(Path.Combine(ModuleDirectory, "../../core"))`.
+- [x] Add `core/` to the module include paths in `OpenRide.Build.cs` using `System.IO.Path.GetFullPath(Path.Combine(ModuleDirectory, "../../core"))`.
+  - Added via `PublicIncludePaths` in `OpenRide.Build.cs` (not compile-tested on the Pi; needs Windows build check); existing relative includes left unchanged.
 - [ ] Verify the core headers compile under MSVC with UE's flags (check for `/WX`, shadowing, `check`/`min`/`max` macro clashes, RTTI/exceptions assumptions).
 - [ ] Make sure core sources are either header-only or compiled into the module (decide: `core/*.cpp` pulled in via Build.cs vs. a separate static library).
 

@@ -10,6 +10,10 @@ public class OpenRide : ModuleRules
                 // module root, so includes like "Circuit/CircuitActor.h" need it explicitly.
                 PublicIncludePaths.Add(ModuleDirectory);
 
+                // Engine-independent core lives at <repo>/core, outside the module. GetFullPath
+                // normalises the "../.." so the /I path is clean on Windows.
+                PublicIncludePaths.Add(System.IO.Path.GetFullPath(System.IO.Path.Combine(ModuleDirectory, "../../core")));
+
                 PublicDependencyModuleNames.AddRange(new string[]
                 {
                         "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput"
