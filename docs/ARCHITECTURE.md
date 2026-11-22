@@ -10,7 +10,6 @@ OpenRide.uproject
 Source/
   OpenRide/                 UE5 game module (Build.cs, module class)
     Circuit/                ACircuitActor, road mesh generation
-    Player/                 ACyclistCharacter, input, camera modes
     Cyclist/                ABikeActor, anim instance, appearance data
     NPC/                    ANPCCyclist, ARaceManager
     Player/                 ACyclistCharacter (viewer-mode pawn, input, camera)
