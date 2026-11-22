@@ -32,6 +32,9 @@ working engine foundation with a keyboard/mouse "viewer mode".
 ## Code style
 - Unreal C++: follow Epic coding standard (UpperCamelCase types, `F/U/A/E` prefixes).
 - Small, single-responsibility classes. Comment the *why*, not the *what*.
+- Include convention (Unreal module): use module-root-relative paths, e.g. `#include "Circuit/CircuitActor.h"`
+  (resolved via `PublicIncludePaths.Add(ModuleDirectory)` in `OpenRide.Build.cs`). Do not use bare
+  same-folder includes for other folders' headers; the `.h` matching a `.cpp` comes first.
 - Module/folder layout is defined in docs/ARCHITECTURE.md (keep it updated).
 
 ## Definition of done for the whole phase

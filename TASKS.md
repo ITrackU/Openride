@@ -18,7 +18,8 @@ Files exist, encoding is plain ASCII, so the module include path is the suspect
 - [ ] Rebuild and verify the C1083 error for `Circuit/CircuitActor.h` is gone.
 - [x] Grep all `Source/OpenRide/**` for `#include "<Folder>/..."` and confirm each resolves from the module root.
   - Static check on the Pi: every non-engine include resolves from the module root, the same folder, or via `../../../core/...` (not compiled; Windows build still needed).
-- [ ] Decide on a convention (module-root-relative includes vs. same-folder includes) and document it in `CLAUDE.md`.
+- [x] Decide on a convention (module-root-relative includes vs. same-folder includes) and document it in `CLAUDE.md`.
+  - Module-root-relative for cross-folder includes, bare for same-folder siblings; documented in CLAUDE.md and docs/ARCHITECTURE.md.
 
 ### Engine-independent core (repo-root `core/`)
 - [ ] Find every include in `Source/OpenRide` that reaches into `core/` (e.g. `FStadiumCircuit`) and list the paths used.

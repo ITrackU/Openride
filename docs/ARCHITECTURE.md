@@ -43,6 +43,7 @@ docs/                       ARCHITECTURE, ASSETS, BLOCKERS, CYCLIST_PIPELINE (ri
   `SampleAtDistance(m)` returns position, unit tangent and wrapped distance; `GenerateSamples(N)` for spline points.
 - Local frame: start at origin heading +X, loop runs counter-clockwise, metres.
 - UE reuse: `Source/OpenRide/Circuit/CircuitCoreBridge.cpp` `#include`s the core .cpp (UBT only compiles files inside the module); `ACircuitActor` includes the core header by relative path.
+- Include convention: module-root-relative (`"Circuit/CircuitActor.h"`), enabled by `PublicIncludePaths.Add(ModuleDirectory)`; sibling headers in the same folder may be included bare; `core/` headers by relative path (see CLAUDE.md).
 - `core/road/RoadMesh.{h,cpp}`: `BuildLoopRibbon` / `BuildDashedRibbon` return `FRoadMesh` (vertices, UVs, up-facing triangles) in metres.
   `ACircuitActor::RebuildRoadMesh()` copies them into two `UProceduralMeshComponent`s (asphalt, markings: 2 solid edge lines + dashed centre line); `RoadMeshBridge.cpp` compiles the core source into the module.
   Materials are placeholders (engine WorldGridMaterial) until real assets are added; UV.V is in metres.
