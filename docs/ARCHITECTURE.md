@@ -46,6 +46,7 @@ docs/                       ARCHITECTURE, ASSETS, BLOCKERS, CYCLIST_PIPELINE (ri
 - `core/road/RoadMesh.{h,cpp}`: `BuildLoopRibbon` / `BuildDashedRibbon` return `FRoadMesh` (vertices, UVs, up-facing triangles) in metres.
   `ACircuitActor::RebuildRoadMesh()` copies them into two `UProceduralMeshComponent`s (asphalt, markings: 2 solid edge lines + dashed centre line); `RoadMeshBridge.cpp` compiles the core source into the module.
   Materials are placeholders (engine WorldGridMaterial) until real assets are added; UV.V is in metres.
+- All core tests at once: `./scripts/run_core_tests.sh` (also run by `.github/workflows/ci.yml`, together with markdown lint and an offline link check; no UE build in CI).
 - Tests: `cd core/road && cmake -S . -B build && cmake --build build && ./build/RoadMeshTests`
 - `core/movement/CyclistMovement.h`: header-only `StepMovement` speed model (throttle/brake/coast, configurable max speed); included directly by `ACyclistCharacter`.
 - `core/lap/LapTracker.h`: header-only `FLapTracker` (total distance, completed laps, lap/last/best time); fed by `ACyclistCharacter` from the unwrapped movement advance.

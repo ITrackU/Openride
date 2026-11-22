@@ -1,0 +1,32 @@
+name: CI
+
+# No Unreal build here: UE cannot run on free CI runners. Only the engine-independent
+# core/ logic and the documentation are checked.
+on:
+  push:
+    branches: [unreal]
+  pull_request:
+
+jobs:
+  core-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and run core unit tests
+        run: ./scripts/run_core_tests.sh
+
+  markdown:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Markdown lint
+        uses: DavidAnson/markdownlint-cli2-action@v16
+        with:
+          globs: |
+            *.md
+            docs/**/*.md
+      - name: Link check (offline, relative links only)
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: --offline --no-progress '*.md' 'docs/**/*.md'
+          fail: true

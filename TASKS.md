@@ -84,7 +84,8 @@
         Note: canvas menu in AOpenRideHUD using core/menu/MenuModel.h (tested via CMake); Settings entry is disabled until the settings screen lands; not compile-tested on the Pi.
   - [x] Settings screen: resolution + quality cycle buttons, key rebinding via the core model.
         Note: settings screen in AOpenRideHUD + ACyclistCharacter::ApplyKeyBindings; key bindings are session-only (not persisted); not compile-tested on the Pi.
-- [ ] Automated checks: a GitHub Actions workflow running the pure-logic unit tests and
+- [x] Automated checks: a GitHub Actions workflow running the pure-logic unit tests and
       markdown/link lint (no UE build in CI).
+      Note: .github/workflows/ci.yml + scripts/run_core_tests.sh (all 14 core modules pass locally); markdownlint/lychee steps not run locally, so lint findings may need a first-pass cleanup.
 - [ ] Update README with screenshots section, roadmap, and next-phase plan
       (Bluetooth trainer, then map generation).
