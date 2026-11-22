@@ -32,7 +32,9 @@ Files exist, encoding is plain ASCII, so the module include path is the suspect
 
 ### Remaining build errors
 - [ ] Re-run the build after the fixes above; fix each new error one at a time, committing per fix.
-- [ ] Check `CircuitCoreBridge.cpp` and `RoadMeshBridge.cpp` (very small files) compile and are not empty stubs that break linking.
+- [x] Check `CircuitCoreBridge.cpp` and `RoadMeshBridge.cpp` (very small files) compile and are not empty stubs that break linking.
+  - Static check on the Pi: not stubs, each just `#include`s a real core `.cpp` (90/86 lines; `#pragma once` headers, no duplicate definitions). Compile still needs Windows. Risk found: `StadiumCircuit.cpp:20` uses `throw`, but UE disables C++ exceptions by default (C4530); see new task below.
+- [ ] Resolve `throw std::invalid_argument` in `core/circuit/StadiumCircuit.cpp` under UE (set `bEnableExceptions = true` in `OpenRide.Build.cs`, or replace the throw with a UE-safe error path while keeping the Pi unit tests valid).
 - [ ] Verify `ProceduralMeshComponent` plugin is enabled and its module name matches in `.uproject` and Build.cs under UE 5.8 (module/plugin renames happen between versions).
 - [ ] Verify `EnhancedInput`, `UMG`, `Slate`, `SlateCore` dependencies resolve in 5.8.
 - [ ] Build the `OpenRide` Game target (not just Editor) for Win64 Development and confirm it succeeds.
