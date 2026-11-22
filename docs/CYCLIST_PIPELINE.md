@@ -67,7 +67,7 @@ graph needs beyond these must be added to that class, not computed in the Bluepr
 ## Material and customization
 - Rider and bike materials use a master material with vector parameters `JerseyColor`,
   `ShortsColor`, `FrameColor`, `HelmetColor`, applied via dynamic material instances
-  by `UCyclistAppearanceData`.
+  by `UCyclistAppearanceData` (`ApplyToRider` / `ApplyToBike`).
 - Masks for coloured regions are baked in texture channels (e.g. vertex colour R = jersey),
   not separate meshes.
 

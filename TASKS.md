@@ -51,8 +51,9 @@
 - [x] Create ABikeActor with wheel rotation tied to speed, steering/lean visual, and
       sockets for rider hands/feet/saddle.
       Note: ABikeActor + UBikeAnimInstance (Cyclist/) + core/bike model (tested via CMake) + ABP_Bike spec; not compile-tested on the Pi.
-- [ ] Add a customization data asset (UCyclistAppearanceData): jersey color, helmet, bike
+- [x] Add a customization data asset (UCyclistAppearanceData): jersey color, helmet, bike
       color, so every cyclist is the same base model with different appearance.
+      Note: UCyclistAppearanceData (Cyclist/) applies colours via MIDs + core/appearance seeded randomiser (tested via CMake); not compile-tested on the Pi.
 
 ## Phase 4: NPC cyclists
 - [ ] Create ANPCCyclist reusing the same rider+bike classes, following the circuit spline

@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.10)
+project(OpenRideCoreAppearance CXX)
+set(CMAKE_CXX_STANDARD 17)
+add_executable(AppearanceModelTests AppearanceModelTests.cpp)
+enable_testing()
+add_test(NAME AppearanceModelTests COMMAND AppearanceModelTests)

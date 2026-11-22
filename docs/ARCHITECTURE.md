@@ -25,6 +25,7 @@ core/                       Engine-independent pure logic + unit tests
   road/                     Road + lane-marking ribbon geometry (no UE)
   anim/                     Cadence / lean / sprint model for the rider animation (no UE)
   bike/                     Wheel spin / steering / lean model for the bike (no UE)
+  appearance/               Seeded random jersey/shorts/helmet/frame colours (no UE)
 docs/                       ARCHITECTURE, ASSETS, BLOCKERS, CYCLIST_PIPELINE (rider/bike asset spec), ANIMATION_BLUEPRINT_SPEC (ABP_Cyclist)
 ```
 
@@ -47,6 +48,8 @@ docs/                       ARCHITECTURE, ASSETS, BLOCKERS, CYCLIST_PIPELINE (ri
 - `core/lap/LapTracker.h`: header-only `FLapTracker` (total distance, completed laps, lap/last/best time); fed by `ACyclistCharacter` from the unwrapped movement advance.
 - `core/anim/CyclistAnimModel.h`: header-only `StepAnimModel` derives cadence (fixed gearing), lean (banking from speed x yaw rate) and sprint (hysteresis) from motion; used by `UCyclistAnimInstance`.
 - `core/bike/BikeModel.h`: header-only `StepBikeModel` (wheel spin = v/r, bicycle-kinematics steering, banking lean); used by `ABikeActor`.
+- `core/appearance/AppearanceModel.h`: header-only `RandomAppearance(seed)` (xorshift PRNG + HSV palette rules); used by `UCyclistAppearanceData::MakeRandom`.
+- Tests: `cd core/appearance && cmake -S . -B build && cmake --build build && ./build/AppearanceModelTests`
 - Tests: `cd core/bike && cmake -S . -B build && cmake --build build && ./build/BikeModelTests`
 - Tests: `cd core/anim && cmake -S . -B build && cmake --build build && ./build/CyclistAnimModelTests`
 - Tests: `cd core/lap && cmake -S . -B build && cmake --build build && ./build/LapTrackerTests`
@@ -63,7 +66,7 @@ docs/                       ARCHITECTURE, ASSETS, BLOCKERS, CYCLIST_PIPELINE (ri
 | `AOpenRideGameMode` (done, uncompiled) | Core/: default pawn = `ACyclistCharacter`, HUD = `AOpenRideHUD`; set as `GlobalDefaultGameMode` in DefaultEngine.ini |
 | `ABikeActor` (done, uncompiled) | Cyclist/: measures its own speed + yaw rate, runs `core/bike`; rolls `LeanPivot` (lean), exposes wheel angle / steer for `UBikeAnimInstance` (`ABP_Bike`); `AttachRider()` snaps rider to `Saddle`, `GetSocketWorldLocation()` for Hand*/Foot* IK targets |
 | `UCyclistAnimInstance` (done, uncompiled) | Cyclist/: measures owner speed + yaw rate, runs `core/anim`, exposes Speed, Cadence, Lean, bSprinting, bPedaling to `ABP_Cyclist` (spec in docs/ANIMATION_BLUEPRINT_SPEC.md) |
-| `UCyclistAppearanceData` | Data asset: jersey, helmet, bike colour |
+| `UCyclistAppearanceData` (done, uncompiled) | Cyclist/: `UDataAsset` with jersey/shorts/helmet/frame colours; `ApplyToRider()` / `ApplyToBike()` set the master-material vector params (`JerseyColor`, `ShortsColor`, `HelmetColor`, `FrameColor`) via dynamic material instances; `MakeRandom(Outer, Seed)` for NPCs |
 | `ANPCCyclist` | Same rider+bike classes, follows spline at target speed |
 | `ARaceManager` | Spawns and manages NPCs |
 
