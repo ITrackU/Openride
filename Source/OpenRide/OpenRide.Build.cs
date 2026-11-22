@@ -14,6 +14,11 @@ public class OpenRide : ModuleRules
                 // normalises the "../.." so the /I path is clean on Windows.
                 PublicIncludePaths.Add(System.IO.Path.GetFullPath(System.IO.Path.Combine(ModuleDirectory, "../../core")));
 
+                // core/circuit/StadiumCircuit.cpp validates its arguments with `throw` (and the Pi unit
+                // tests rely on that). UE builds with C++ exceptions off by default (C4530), so enable
+                // them for this module only instead of forking the core error path.
+                bEnableExceptions = true;
+
                 PublicDependencyModuleNames.AddRange(new string[]
                 {
                         "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput"
