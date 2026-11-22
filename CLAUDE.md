@@ -25,6 +25,8 @@ working engine foundation with a keyboard/mouse "viewer mode".
 ## Environment notes
 - Development machine is a Raspberry Pi (ARM Linux): Unreal Engine CANNOT build or run here.
   Write code, configs and docs carefully, since you cannot compile-test UE code locally.
+  Any change under `Source/` MUST be listed (files + what changed) in the commit message or
+  docs/BUILD_CHECK.md for a manual Windows build check before merge.
   Prefer simple, conventional UE5 C++ patterns to minimize errors.
 - Keep pure logic (circuit math, physics helpers) in engine-independent files/tests where
   possible, so it can be unit-tested on the Pi.

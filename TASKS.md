@@ -51,5 +51,6 @@ Files exist, encoding is plain ASCII, so the module include path is the suspect
   - Added `scripts/build-win.ps1` (`-EngineDir`/`UE_ROOT`, `-Target`); not run, needs Windows. Uses the standard `Build.bat <Target> Win64 Development -Project=...` form.
 - [x] Add a CI job (GitHub Actions, Windows runner with UE or a documented manual step) or a documented local check so the Unreal module is compiled before merge.
   - Documented manual Windows check in docs/BUILD_CHECK.md (free runners can't run UE); not run, needs Windows.
-- [ ] Update `CLAUDE.md`: the Linux automation cannot compile the Unreal module; any change under `Source/` must be listed for a manual Windows build check.
+- [x] Update `CLAUDE.md`: the Linux automation cannot compile the Unreal module; any change under `Source/` must be listed for a manual Windows build check.
+  - Added to CLAUDE.md environment notes; points to docs/BUILD_CHECK.md.
 - [ ] Add `build.log` to `.gitignore`.
