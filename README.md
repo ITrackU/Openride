@@ -13,7 +13,7 @@ Long-term goal: connect a Bluetooth smart home trainer and ride through a render
 
 Progress is tracked in [TASKS.md](TASKS.md). Design is described in
 [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). Third-party assets and their licenses are listed in
-[docs/ASSETS.md](docs/ASSETS.md); known blockers in [docs/BLOCKERS.md](docs/BLOCKERS.md).
+[docs/ASSETS.md](docs/ASSETS.md); Windows build check in [docs/BUILD_CHECK.md](docs/BUILD_CHECK.md); known blockers in [docs/BLOCKERS.md](docs/BLOCKERS.md).
 
 ## Screenshots
 No screenshots yet: the code is written on a Raspberry Pi where Unreal Engine cannot run.

@@ -29,7 +29,7 @@ core/                       Engine-independent pure logic + unit tests
   npc/                      NPC speed + lane-offset follower model (no UE)
   menu/                     Pause-menu selection + hit-test model (no UE)
   race/                     spawn planning + lane avoidance for the NPC field (no UE)
-docs/                       ARCHITECTURE, ASSETS, BLOCKERS, CYCLIST_PIPELINE (rider/bike asset spec), ANIMATION_BLUEPRINT_SPEC (ABP_Cyclist)
+docs/                       ARCHITECTURE, ASSETS, BLOCKERS, BUILD_CHECK (manual Windows compile check), CYCLIST_PIPELINE (rider/bike asset spec), ANIMATION_BLUEPRINT_SPEC (ABP_Cyclist)
 ```
 
 ## Project scaffold notes
