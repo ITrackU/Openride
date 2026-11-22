@@ -13,7 +13,8 @@ Files exist, encoding is plain ASCII, so the module include path is the suspect
 - [ ] Generate a throwaway blank UE 5.8 C++ project and compare its `.Build.cs` and Target.cs files with ours.
 
 ### Fix include paths
-- [ ] Add `PublicIncludePaths.Add(ModuleDirectory);` to `OpenRide.Build.cs`.
+- [x] Add `PublicIncludePaths.Add(ModuleDirectory);` to `OpenRide.Build.cs`.
+  - Done on the Pi (not compile-tested); Diagnose tasks 1-5 are blocked on Windows, see docs/BLOCKERS.md.
 - [ ] Rebuild and verify the C1083 error for `Circuit/CircuitActor.h` is gone.
 - [ ] Grep all `Source/OpenRide/**` for `#include "<Folder>/..."` and confirm each resolves from the module root.
 - [ ] Decide on a convention (module-root-relative includes vs. same-folder includes) and document it in `CLAUDE.md`.
