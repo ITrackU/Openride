@@ -66,16 +66,7 @@ void ACyclistCharacter::CreateDefaultInput()
 	ToggleCameraAction = NewObject<UInputAction>(this, TEXT("IA_ToggleCamera"));
 	ToggleCameraAction->ValueType = EInputActionValueType::Boolean;
 
-	// W/Up = +1, S/Down = -1 via a Negate modifier.
-	auto MapNegated = [this](const FKey& Key)
-	{
-		FEnhancedActionKeyMapping& Mapping = MappingContext->MapKey(MoveAction, Key);
-		Mapping.Modifiers.Add(NewObject<UInputModifierNegate>(MappingContext));
-	};
-	MappingContext->MapKey(MoveAction, EKeys::W);
-	MappingContext->MapKey(MoveAction, EKeys::Up);
-	MapNegated(EKeys::S);
-	MapNegated(EKeys::Down);
+	MapRebindableKeys(OpenRideCore::FKeyBindings::Defaults());
 
 	// Free-fly only: D/A strafe, E/Q up/down (ignored in the other camera modes).
 	MappingContext->MapKey(FlyRightAction, EKeys::D);
@@ -95,7 +86,51 @@ void ACyclistCharacter::CreateDefaultInput()
 	FEnhancedActionKeyMapping& ZoomOut = MappingContext->MapKey(ZoomAction, EKeys::MouseScrollDown);
 	ZoomOut.Modifiers.Add(NewObject<UInputModifierNegate>(MappingContext));
 
-	MappingContext->MapKey(ToggleCameraAction, EKeys::C);
+}
+
+void ACyclistCharacter::MapRebindableKeys(const OpenRideCore::FKeyBindings& Bindings)
+{
+	auto KeyOf = [&Bindings](const char* Action, const FKey& Fallback)
+	{
+		const FKey K(FName(UTF8_TO_TCHAR(Bindings.KeyFor(Action).c_str())));
+		return K.IsValid() ? K : Fallback;
+	};
+
+	// Accelerate = +1, Brake = -1 via a Negate modifier; arrows always work as well.
+	auto MapNegated = [this](const FKey& Key)
+	{
+		FEnhancedActionKeyMapping& Mapping = MappingContext->MapKey(MoveAction, Key);
+		Mapping.Modifiers.Add(NewObject<UInputModifierNegate>(MappingContext));
+	};
+	MappingContext->MapKey(MoveAction, KeyOf("Accelerate", EKeys::W));
+	MappingContext->MapKey(MoveAction, EKeys::Up);
+	MapNegated(KeyOf("Brake", EKeys::S));
+	MapNegated(EKeys::Down);
+
+	MappingContext->MapKey(ToggleCameraAction, KeyOf("CycleCamera", EKeys::C));
+}
+
+void ACyclistCharacter::ApplyKeyBindings(const OpenRideCore::FKeyBindings& Bindings)
+{
+	if (!MappingContext)
+	{
+		return;
+	}
+	MappingContext->UnmapAllKeysFromAction(MoveAction);
+	MappingContext->UnmapAllKeysFromAction(ToggleCameraAction);
+	MapRebindableKeys(Bindings);
+
+	// The subsystem caches the context, so ask it to rebuild after the edit.
+	if (const APlayerController* PC = Cast<APlayerController>(GetController()))
+	{
+		if (ULocalPlayer* LP = PC->GetLocalPlayer())
+		{
+			if (UEnhancedInputLocalPlayerSubsystem* Subsystem = LP->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
+			{
+				Subsystem->RequestRebuildControlMappings();
+			}
+		}
+	}
 }
 
 void ACyclistCharacter::PawnClientRestart()

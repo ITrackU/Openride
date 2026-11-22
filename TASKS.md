@@ -74,7 +74,7 @@
       Note: ASkyLightingActor (Environment/) + core/sky day-time model (tested via CMake); one TimeOfDayHours property drives sun, ambient, exposure; not compile-tested on the Pi.
 
 ## Phase 6: Polish and tooling
-- [ ] Settings menu (resolution, graphics quality, key bindings) and pause menu.
+- [x] Settings menu (resolution, graphics quality, key bindings) and pause menu.
       Split into sub-tasks:
   - [x] Engine-independent settings model (resolutions, quality levels, key-binding table with conflict swap).
         Note: core/settings/SettingsModel.h (tested via CMake).
@@ -82,7 +82,8 @@
         Note: UOpenRideSettingsLibrary (UI/) wraps UGameUserSettings using core/settings; not compile-tested on the Pi.
   - [x] Pause menu (Escape): UMG-free Slate/canvas widget with Resume / Settings / Quit.
         Note: canvas menu in AOpenRideHUD using core/menu/MenuModel.h (tested via CMake); Settings entry is disabled until the settings screen lands; not compile-tested on the Pi.
-  - [ ] Settings screen: resolution + quality cycle buttons, key rebinding via the core model.
+  - [x] Settings screen: resolution + quality cycle buttons, key rebinding via the core model.
+        Note: settings screen in AOpenRideHUD + ACyclistCharacter::ApplyKeyBindings; key bindings are session-only (not persisted); not compile-tested on the Pi.
 - [ ] Automated checks: a GitHub Actions workflow running the pure-logic unit tests and
       markdown/link lint (no UE build in CI).
 - [ ] Update README with screenshots section, roadmap, and next-phase plan

@@ -4,6 +4,7 @@
 #include "GameFramework/Pawn.h"
 #include "InputActionValue.h"
 #include "../../../core/lap/LapTracker.h"
+#include "../../../core/settings/SettingsModel.h"
 #include "../../../core/movement/CyclistMovement.h"
 #include "CyclistCharacter.generated.h"
 
@@ -119,6 +120,9 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Camera")
 	bool IsFreeFly() const { return CameraMode == ECyclistCameraMode::FreeFly; }
 
+	/** Remaps Accelerate / Brake / CycleCamera from the settings screen's key table (arrows stay as extra keys). */
+	void ApplyKeyBindings(const OpenRideCore::FKeyBindings& Bindings);
+
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
@@ -147,6 +151,8 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
 	TObjectPtr<UCameraComponent> Camera;
+
+	void MapRebindableKeys(const OpenRideCore::FKeyBindings& Bindings);
 
 	UPROPERTY() TObjectPtr<UInputMappingContext> MappingContext;
 	UPROPERTY() TObjectPtr<UInputAction> MoveAction;

@@ -3,10 +3,12 @@
 #include "Engine/Canvas.h"
 #include "Engine/Engine.h"
 #include "Components/InputComponent.h"
+#include "GameFramework/GameUserSettings.h"
 #include "GameFramework/PlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Player/CyclistCharacter.h"
+#include "UI/OpenRideSettingsLibrary.h"
 
 FString AOpenRideHUD::FormatTime(float Seconds)
 {
@@ -48,8 +50,117 @@ void AOpenRideHUD::BeginPlay()
 
 void AOpenRideHUD::BuildPauseItems()
 {
-	// Settings stays disabled until the settings screen task lands.
-	PauseItems = { {"Resume", true}, {"Settings", false}, {"Quit", true} };
+	PauseItems = { {"Resume", true}, {"Settings", true}, {"Quit", true} };
+}
+
+const std::vector<OpenRideCore::FMenuItem>& AOpenRideHUD::ActiveItems() const
+{
+	return Screen == EScreen::Settings ? SettingsItems : PauseItems;
+}
+
+void AOpenRideHUD::BuildSettingsItems()
+{
+	SettingsItems.clear();
+	const OpenRideCore::FResolution& R = Resolutions[ResolutionIndex];
+	SettingsItems.push_back({"Resolution: " + std::to_string(R.Width) + "x" + std::to_string(R.Height), true});
+
+	const int32 Q = UOpenRideSettingsLibrary::GetQualityLevel();
+	SettingsItems.push_back({"Quality: " + std::string(Q < 0 ? "Custom" : TCHAR_TO_UTF8(*UOpenRideSettingsLibrary::GetQualityName(Q))), true});
+
+	// Pause (Escape) is not rebindable: Escape is also the menu's cancel key.
+	for (const OpenRideCore::FKeyBinding& B : KeyBindings.All())
+	{
+		if (B.Action == "Pause")
+		{
+			continue;
+		}
+		const bool bCapturing = (RebindAction == B.Action);
+		SettingsItems.push_back({B.Action + ": " + (bCapturing ? "press a key..." : B.Key), true});
+	}
+	SettingsItems.push_back({"Back", true});
+}
+
+void AOpenRideHUD::OpenSettingsScreen()
+{
+	Resolutions = OpenRideCore::DefaultResolutions();
+	const FIntPoint Cur = GEngine && GEngine->GameUserSettings ? GEngine->GameUserSettings->GetScreenResolution() : FIntPoint(1280, 720);
+	ResolutionIndex = FMath::Max(0, OpenRideCore::NearestResolutionIndex(Resolutions, {Cur.X, Cur.Y}));
+	Screen = EScreen::Settings;
+	SelectedItem = 0;
+	RebindAction.clear();
+	BuildSettingsItems();
+}
+
+void AOpenRideHUD::ActivateSettingsItem(int32 Index)
+{
+	const int32 Last = static_cast<int32>(SettingsItems.size()) - 1;
+	if (Index == Last)
+	{
+		UOpenRideSettingsLibrary::SaveSettings();
+		Screen = EScreen::Pause;
+		SelectedItem = Settings;
+		return;
+	}
+	if (Index == SettingsResolutionRow)
+	{
+		ResolutionIndex = (ResolutionIndex + 1) % static_cast<int32>(Resolutions.size());
+		UOpenRideSettingsLibrary::ApplyResolution(FIntPoint(Resolutions[ResolutionIndex].Width, Resolutions[ResolutionIndex].Height));
+	}
+	else if (Index == SettingsQualityRow)
+	{
+		// Custom (-1) wraps to Low via (-1 + 1) % 4.
+		UOpenRideSettingsLibrary::ApplyQualityLevel((UOpenRideSettingsLibrary::GetQualityLevel() + 1) % 4);
+	}
+	else
+	{
+		// Rows from SettingsFirstKeyRow map to the non-Pause actions in table order.
+		int32 Row = SettingsFirstKeyRow;
+		for (const OpenRideCore::FKeyBinding& B : KeyBindings.All())
+		{
+			if (B.Action == "Pause") { continue; }
+			if (Row++ == Index) { RebindAction = B.Action; RebindStartFrame = GFrameCounter; break; }
+		}
+	}
+	BuildSettingsItems();
+}
+
+void AOpenRideHUD::FinishRebind(const FKey& Key)
+{
+	if (Key != EKeys::Escape) // Escape cancels the capture.
+	{
+		KeyBindings.Rebind(RebindAction, TCHAR_TO_UTF8(*Key.GetFName().ToString()));
+		if (ACyclistCharacter* Cyclist = Cast<ACyclistCharacter>(GetOwningPawn()))
+		{
+			Cyclist->ApplyKeyBindings(KeyBindings);
+		}
+	}
+	RebindAction.clear();
+	BuildSettingsItems();
+}
+
+void AOpenRideHUD::PollRebindKey()
+{
+	// Polled instead of bound: a single AnyKey binding would not tell us which key was pressed.
+	APlayerController* PC = GetOwningPlayerController();
+	// Skip the activation frame, or the Enter press that started the capture would be taken as the new key.
+	if (!PC || GFrameCounter <= RebindStartFrame)
+	{
+		return;
+	}
+	TArray<FKey> AllKeys;
+	EKeys::GetAllKeys(AllKeys);
+	for (const FKey& Key : AllKeys)
+	{
+		if (Key.IsMouseButton() || Key.IsGamepadKey() || Key.IsAxis1D() || Key.IsAxis2D() || Key.IsAxis3D() || !Key.IsValid())
+		{
+			continue;
+		}
+		if (PC->WasInputKeyJustPressed(Key))
+		{
+			FinishRebind(Key);
+			return;
+		}
+	}
 }
 
 OpenRideCore::FMenuLayout AOpenRideHUD::MakeLayout() const
@@ -69,6 +180,8 @@ OpenRideCore::FMenuLayout AOpenRideHUD::MakeLayout() const
 void AOpenRideHUD::SetPauseMenuOpen(bool bOpen)
 {
 	bPauseMenuOpen = bOpen;
+	Screen = EScreen::Pause;
+	RebindAction.clear();
 	SelectedItem = 0;
 	if (APlayerController* PC = GetOwningPlayerController())
 	{
@@ -87,28 +200,39 @@ void AOpenRideHUD::SetPauseMenuOpen(bool bOpen)
 
 void AOpenRideHUD::TogglePauseMenu()
 {
+	if (bPauseMenuOpen && Screen == EScreen::Settings)
+	{
+		// Escape inside settings: cancel a pending rebind (handled by the poll), else go back.
+		if (RebindAction.empty())
+		{
+			UOpenRideSettingsLibrary::SaveSettings();
+			Screen = EScreen::Pause;
+			SelectedItem = Settings;
+		}
+		return;
+	}
 	SetPauseMenuOpen(!bPauseMenuOpen);
 }
 
 void AOpenRideHUD::OnMenuUp()
 {
-	if (bPauseMenuOpen)
+	if (bPauseMenuOpen && RebindAction.empty())
 	{
-		SelectedItem = OpenRideCore::MoveSelection(PauseItems, SelectedItem, -1);
+		SelectedItem = OpenRideCore::MoveSelection(ActiveItems(), SelectedItem, -1);
 	}
 }
 
 void AOpenRideHUD::OnMenuDown()
 {
-	if (bPauseMenuOpen)
+	if (bPauseMenuOpen && RebindAction.empty())
 	{
-		SelectedItem = OpenRideCore::MoveSelection(PauseItems, SelectedItem, +1);
+		SelectedItem = OpenRideCore::MoveSelection(ActiveItems(), SelectedItem, +1);
 	}
 }
 
 void AOpenRideHUD::OnMenuConfirm()
 {
-	if (bPauseMenuOpen)
+	if (bPauseMenuOpen && RebindAction.empty())
 	{
 		ActivateItem(SelectedItem);
 	}
@@ -118,11 +242,11 @@ void AOpenRideHUD::OnMouseClick()
 {
 	APlayerController* PC = GetOwningPlayerController();
 	float X = 0.f, Y = 0.f;
-	if (!bPauseMenuOpen || !PC || !PC->GetMousePosition(X, Y))
+	if (!bPauseMenuOpen || !RebindAction.empty() || !PC || !PC->GetMousePosition(X, Y))
 	{
 		return;
 	}
-	const int32 Hit = OpenRideCore::HitTest(MakeLayout(), PauseItems, X, Y);
+	const int32 Hit = OpenRideCore::HitTest(MakeLayout(), ActiveItems(), X, Y);
 	if (Hit >= 0)
 	{
 		ActivateItem(Hit);
@@ -131,6 +255,11 @@ void AOpenRideHUD::OnMouseClick()
 
 void AOpenRideHUD::ActivateItem(int32 Index)
 {
+	if (Screen == EScreen::Settings)
+	{
+		ActivateSettingsItem(Index);
+		return;
+	}
 	switch (Index)
 	{
 	case Resume:
@@ -139,8 +268,11 @@ void AOpenRideHUD::ActivateItem(int32 Index)
 	case Quit:
 		UKismetSystemLibrary::QuitGame(this, GetOwningPlayerController(), EQuitPreference::Quit, false);
 		break;
+	case Settings:
+		OpenSettingsScreen();
+		break;
 	default:
-		break; // Settings: not implemented yet (disabled in BuildPauseItems).
+		break;
 	}
 }
 
@@ -155,9 +287,10 @@ void AOpenRideHUD::DrawPauseMenu()
 
 	UFont* Font = GEngine->GetMediumFont();
 	const OpenRideCore::FMenuLayout Layout = MakeLayout();
-	const int32 Count = static_cast<int32>(PauseItems.size());
+	const std::vector<OpenRideCore::FMenuItem>& Items = ActiveItems();
+	const int32 Count = static_cast<int32>(Items.size());
 
-	const FString Title = TEXT("Paused");
+	const FString Title = Screen == EScreen::Settings ? TEXT("Settings") : TEXT("Paused");
 	float TW = 0.f, TH = 0.f;
 	GetTextSize(Title, TW, TH, Font, TextScale * 1.5f);
 	DrawText(Title, FLinearColor::White, (Canvas->SizeX - TW) * 0.5f,
@@ -165,7 +298,7 @@ void AOpenRideHUD::DrawPauseMenu()
 
 	for (int32 i = 0; i < Count; ++i)
 	{
-		const OpenRideCore::FMenuItem& Item = PauseItems[i];
+		const OpenRideCore::FMenuItem& Item = Items[i];
 		const OpenRideCore::FRect R = OpenRideCore::ButtonRect(Layout, Count, i);
 		const bool bSelected = (i == SelectedItem) && Item.bEnabled;
 		DrawRect(bSelected ? FLinearColor(0.2f, 0.5f, 0.9f, 0.9f) : FLinearColor(0.1f, 0.1f, 0.1f, 0.85f),
@@ -185,6 +318,10 @@ void AOpenRideHUD::DrawHUD()
 
 	if (bPauseMenuOpen)
 	{
+		if (!RebindAction.empty())
+		{
+			PollRebindKey();
+		}
 		DrawPauseMenu();
 		return;
 	}

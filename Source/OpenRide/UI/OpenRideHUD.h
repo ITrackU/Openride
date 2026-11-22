@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
 #include "../../../core/menu/MenuModel.h"
+#include "../../../core/settings/SettingsModel.h"
 #include "OpenRideHUD.generated.h"
 
 /**
@@ -31,6 +32,18 @@ public:
 
 private:
 	enum EPauseItem { Resume = 0, Settings = 1, Quit = 2 };
+	enum class EScreen : uint8 { Pause, Settings };
+	// Settings rows: 0 resolution, 1 quality, 2.. one per rebindable action, last = Back.
+	static constexpr int32 SettingsResolutionRow = 0;
+	static constexpr int32 SettingsQualityRow = 1;
+	static constexpr int32 SettingsFirstKeyRow = 2;
+
+	const std::vector<OpenRideCore::FMenuItem>& ActiveItems() const;
+	void BuildSettingsItems();
+	void OpenSettingsScreen();
+	void ActivateSettingsItem(int32 Index);
+	void FinishRebind(const FKey& Key);
+	void PollRebindKey();
 
 	void BuildPauseItems();
 	void DrawPauseMenu();
@@ -43,6 +56,14 @@ private:
 	OpenRideCore::FMenuLayout MakeLayout() const;
 
 	bool bPauseMenuOpen = false;
+	EScreen Screen = EScreen::Pause;
+	/** Action waiting for its new key, or empty when not capturing. */
+	std::string RebindAction;
+	uint64 RebindStartFrame = 0;
+	std::vector<OpenRideCore::FResolution> Resolutions;
+	int32 ResolutionIndex = 0;
+	OpenRideCore::FKeyBindings KeyBindings = OpenRideCore::FKeyBindings::Defaults();
+	std::vector<OpenRideCore::FMenuItem> SettingsItems;
 	int32 SelectedItem = 0;
 	std::vector<OpenRideCore::FMenuItem> PauseItems;
 };
