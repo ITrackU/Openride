@@ -27,6 +27,7 @@ core/                       Engine-independent pure logic + unit tests
   bike/                     Wheel spin / steering / lean model for the bike (no UE)
   appearance/               Seeded random jersey/shorts/helmet/frame colours (no UE)
   npc/                      NPC speed + lane-offset follower model (no UE)
+  race/                     spawn planning + lane avoidance for the NPC field (no UE)
 docs/                       ARCHITECTURE, ASSETS, BLOCKERS, CYCLIST_PIPELINE (rider/bike asset spec), ANIMATION_BLUEPRINT_SPEC (ABP_Cyclist)
 ```
 
@@ -51,6 +52,8 @@ docs/                       ARCHITECTURE, ASSETS, BLOCKERS, CYCLIST_PIPELINE (ri
 - `core/bike/BikeModel.h`: header-only `StepBikeModel` (wheel spin = v/r, bicycle-kinematics steering, banking lean); used by `ABikeActor`.
 - `core/appearance/AppearanceModel.h`: header-only `RandomAppearance(seed)` (xorshift PRNG + HSV palette rules); used by `UCyclistAppearanceData::MakeRandom`.
 - `core/npc/NpcFollower.h`: header-only `StepNpcFollower` (bounded acceleration towards a target speed, bounded lateral drift towards a target lane); used by `ANPCCyclist`.
+- `core/race/RaceModel.h`: header-only `PlanSpawns` (seeded start offsets, speeds, preferred lanes, appearance seeds) and `DecideAvoidance` (free-lane overtaking, follow the blocker if boxed in); used by `ARaceManager`.
+- Tests: `cd core/race && cmake -S . -B build && cmake --build build && ./build/RaceModelTests`
 - Tests: `cd core/npc && cmake -S . -B build && cmake --build build && ./build/NpcFollowerTests`
 - Tests: `cd core/appearance && cmake -S . -B build && cmake --build build && ./build/AppearanceModelTests`
 - Tests: `cd core/bike && cmake -S . -B build && cmake --build build && ./build/BikeModelTests`
@@ -71,7 +74,7 @@ docs/                       ARCHITECTURE, ASSETS, BLOCKERS, CYCLIST_PIPELINE (ri
 | `UCyclistAnimInstance` (done, uncompiled) | Cyclist/: measures owner speed + yaw rate, runs `core/anim`, exposes Speed, Cadence, Lean, bSprinting, bPedaling to `ABP_Cyclist` (spec in docs/ANIMATION_BLUEPRINT_SPEC.md) |
 | `UCyclistAppearanceData` (done, uncompiled) | Cyclist/: `UDataAsset` with jersey/shorts/helmet/frame colours; `ApplyToRider()` / `ApplyToBike()` set the master-material vector params (`JerseyColor`, `ShortsColor`, `HelmetColor`, `FrameColor`) via dynamic material instances; `MakeRandom(Outer, Seed)` for NPCs |
 | `ANPCCyclist` (done, uncompiled) | NPC/: `AActor` with a rider `USkeletalMeshComponent`; spawns `BikeClass` (default `ABikeActor`) at BeginPlay, attaches the rider to the Saddle socket, optionally applies `UCyclistAppearanceData`; follows the circuit by distance at `TargetSpeedMps` with a smoothed `LaneOffsetMeters` (right of travel); `core/npc` model |
-| `ARaceManager` | Spawns and manages NPCs |
+| `ARaceManager` (done, uncompiled) | NPC/: spawns `NumNPCs` `NPCClass` actors (deferred spawn) with seeded speed/lane/start offset and `UCyclistAppearanceData::MakeRandom`; each tick (post-update) feeds every NPC's `TargetSpeedMps`/`LaneOffsetMeters` from `core/race` avoidance, treating the player as a lane-0 rider |
 
 ## Conventions
 - Epic coding standard (UpperCamelCase, `F/U/A/E` prefixes).

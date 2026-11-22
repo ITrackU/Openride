@@ -59,8 +59,9 @@
 - [x] Create ANPCCyclist reusing the same rider+bike classes, following the circuit spline
       at a configurable target speed with slight lane offset.
       Note: ANPCCyclist (NPC/) + core/npc follower model (tested via CMake); rider mesh/ABP and bike class assigned in a Blueprint subclass; not compile-tested on the Pi.
-- [ ] Spawner/manager (ARaceManager): spawn N NPCs with randomized appearance, speeds,
+- [x] Spawner/manager (ARaceManager): spawn N NPCs with randomized appearance, speeds,
       and start offsets. Basic overtaking/avoidance via lane offset.
+      Note: ARaceManager (NPC/) + core/race plan/avoidance model (tested via CMake); player treated as lane-0 rider; not compile-tested on the Pi.
 
 ## Phase 5: Environment
 - [ ] Procedural/instanced grass and foliage around the loop (HISM) with density settings.
