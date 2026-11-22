@@ -69,8 +69,9 @@
 - [x] Modular house/building generator or placeholder meshes placed around the circuit
       (several variants), with a data-driven placement actor.
       Note: ABuildingPlacerActor + UBuildingSetData (Environment/) + core/buildings placement (tested via CMake); cube placeholders, 3 default variants; not compile-tested on the Pi.
-- [ ] Add sky/lighting setup (directional light, sky atmosphere, post-process) and a
+- [x] Add sky/lighting setup (directional light, sky atmosphere, post-process) and a
       day-time parameter.
+      Note: ASkyLightingActor (Environment/) + core/sky day-time model (tested via CMake); one TimeOfDayHours property drives sun, ambient, exposure; not compile-tested on the Pi.
 
 ## Phase 6: Polish and tooling
 - [ ] Settings menu (resolution, graphics quality, key bindings) and pause menu.

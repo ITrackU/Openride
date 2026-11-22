@@ -13,7 +13,7 @@ Source/
     Cyclist/                ABikeActor, anim instance, appearance data
     NPC/                    ANPCCyclist, ARaceManager
     Player/                 ACyclistCharacter (viewer-mode pawn, input, camera)
-    Environment/            AGroundActor (done), AFoliageActor (done), ABuildingPlacerActor (done), sky/lighting
+    Environment/            AGroundActor (done), AFoliageActor (done), ABuildingPlacerActor (done), ASkyLightingActor (done)
     UI/                     AOpenRideHUD (done), menus
     Core/                   AOpenRideGameMode (default pawn + HUD)
   OpenRide.Target.cs
@@ -55,6 +55,8 @@ docs/                       ARCHITECTURE, ASSETS, BLOCKERS, CYCLIST_PIPELINE (ri
 - `core/race/RaceModel.h`: header-only `PlanSpawns` (seeded start offsets, speeds, preferred lanes, appearance seeds) and `DecideAvoidance` (free-lane overtaking, follow the blocker if boxed in); used by `ARaceManager`.
 - `core/foliage/FoliageScatter.h`: header-only `ScatterFoliage` (seeded jittered grid, density per m², road-clearance cull via `DistanceToLoop`, instance cap); used by `AFoliageActor`.
 - `core/buildings/BuildingPlacer.h`: header-only `PlaceBuildings` (walks the loop, outside-only, setback from the road, weighted variants, no overlaps; seeded); used by `ABuildingPlacerActor`.
+- `core/sky/SkyModel.h`: header-only `ComputeSky(hours)` (sinusoidal sun elevation/azimuth, sun intensity + colour temperature, ambient level, exposure bias); used by `ASkyLightingActor`.
+- Tests: `cd core/sky && cmake -S . -B build && cmake --build build && ./build/SkyModelTests`
 - Tests: `cd core/buildings && cmake -S . -B build && cmake --build build && ./build/BuildingPlacerTests`
 - Tests: `cd core/foliage && cmake -S . -B build && cmake --build build && ./build/FoliageScatterTests`
 - Tests: `cd core/race && cmake -S . -B build && cmake --build build && ./build/RaceModelTests`
@@ -81,6 +83,7 @@ docs/                       ARCHITECTURE, ASSETS, BLOCKERS, CYCLIST_PIPELINE (ri
 | `ARaceManager` (done, uncompiled) | NPC/: spawns `NumNPCs` `NPCClass` actors (deferred spawn) with seeded speed/lane/start offset and `UCyclistAppearanceData::MakeRandom`; each tick (post-update) feeds every NPC's `TargetSpeedMps`/`LaneOffsetMeters` from `core/race` avoidance, treating the player as a lane-0 rider |
 | `AFoliageActor` (done, uncompiled) | Environment/: one `UHierarchicalInstancedStaticMeshComponent` of grass tufts scattered by `core/foliage` around the `Circuit` (road clearance, margin, seed); settings `DensityPerSqm`, `MaxInstances`, `CullDistanceMeters`; engine cone + grid material as placeholders; `RebuildFoliage()` |
 | `ABuildingPlacerActor` (done, uncompiled) | Environment/: places buildings outside the `Circuit` via `core/buildings`; variants (mesh, material, width/depth/height ranges, weight) come from a `UBuildingSetData` data asset (3 placeholder variants if none assigned); one `UInstancedStaticMeshComponent` per variant, engine cube + grid material as placeholders; `RebuildBuildings()` |
+| `ASkyLightingActor` (done, uncompiled) | Environment/: directional sun + `USkyAtmosphereComponent` + real-time-capture sky light + height fog + unbound post-process (auto-exposure); `TimeOfDayHours` (0..24) drives sun rotation/colour/ambient/exposure via `core/sky`; `SetTimeOfDay()`, optional `TimeSpeedHoursPerSecond` to run the clock |
 
 ## Conventions
 - Epic coding standard (UpperCamelCase, `F/U/A/E` prefixes).

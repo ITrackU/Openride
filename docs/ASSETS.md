@@ -9,3 +9,4 @@ Add one row per asset when it is introduced.
 
 - Foliage placeholders (`/Engine/BasicShapes/Cone`, `WorldGridMaterial`) are stock Unreal Engine content, referenced not redistributed; replace with a real grass mesh/material (log the licence here) on the PC side.
 - Building placeholders (`/Engine/BasicShapes/Cube`, `WorldGridMaterial`) are stock Unreal Engine content, referenced not redistributed; assign real house/building meshes in a `UBuildingSetData` asset (log the licence here) on the PC side.
+- Sky/lighting uses only built-in Unreal components (SkyAtmosphere, DirectionalLight, SkyLight, ExponentialHeightFog); no external assets.
