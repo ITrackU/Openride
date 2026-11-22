@@ -109,3 +109,13 @@ docs/                       ARCHITECTURE, ASSETS, BLOCKERS, CYCLIST_PIPELINE (ri
 6. Phase 5: environment (grass, buildings, sky)
 7. Phase 6: polish, settings, CI
 8. Later: Bluetooth smart trainer, then map/terrain generation
+
+## Includes reaching into `core/`
+
+All use the relative form `../../../core/<dir>/<File>` (from `Source/OpenRide/<Folder>/`):
+
+- Headers: `lap/LapTracker.h`, `settings/SettingsModel.h`, `movement/CyclistMovement.h` (CyclistCharacter.h);
+  `circuit/StadiumCircuit.h`, `road/RoadMesh.h` (CircuitActor.cpp); `sky/SkyModel.h`; `buildings/BuildingPlacer.h`;
+  `foliage/FoliageScatter.h`; `appearance/AppearanceModel.h`; `anim/CyclistAnimModel.h`; `bike/BikeModel.h`;
+  `menu/MenuModel.h` (OpenRideHUD.h); `race/RaceModel.h`; `npc/NpcFollower.h`; `settings/SettingsModel.h` (OpenRideSettingsLibrary.cpp).
+- Sources compiled via the module: `circuit/StadiumCircuit.cpp` (CircuitCoreBridge.cpp), `road/RoadMesh.cpp` (RoadMeshBridge.cpp).
