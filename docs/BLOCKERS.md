@@ -14,3 +14,4 @@ Format: `- [date] Task: blocker description (what is needed to unblock)`
 - [2026-11-23] Re-run: first unchecked task ("Reproduce on Windows") and all others are still Windows-only; no task could be completed or ticked on the Pi. Unblock by running scripts/build-win.ps1 on Windows and following docs/BUILD_CHECK.md.
 - [2026-11-23] Re-run (3rd): re-verified all 13 unchecked TASKS.md items (lines 9-47) are Windows + UE 5.8 + VS 2022 only; nothing ticked. Unblock via scripts/build-win.ps1 and docs/BUILD_CHECK.md.
 - [2026-11-23] Re-run (4th): all 13 unchecked TASKS.md items still need Windows + UE 5.8 + VS 2022; nothing ticked. Unblock via scripts/build-win.ps1 and docs/BUILD_CHECK.md.
+- [2026-11-23] Re-run (5th): all unchecked TASKS.md items still need Windows + UE 5.8 + VS 2022; nothing ticked. Unblock via scripts/build-win.ps1 and docs/BUILD_CHECK.md.
