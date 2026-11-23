@@ -23,3 +23,4 @@ Format: `- [date] Task: blocker description (what is needed to unblock)`
 - [2026-11-23] Re-run (11th): all unchecked TASKS.md items still need Windows + UE 5.8 + VS 2022; nothing ticked. Unblock via scripts/build-win.ps1 and docs/BUILD_CHECK.md.
 - [2026-11-23] Re-run (12th): all unchecked TASKS.md items still need Windows + UE 5.8 + VS 2022; nothing ticked. Unblock via scripts/build-win.ps1 and docs/BUILD_CHECK.md.
 - [2026-11-23] Re-run (13th): all unchecked TASKS.md items still need Windows + UE 5.8 + VS 2022; nothing ticked. Unblock via scripts/build-win.ps1 and docs/BUILD_CHECK.md.
+- [2026-11-23] Re-run (14th): all unchecked TASKS.md items still need Windows + UE 5.8 + VS 2022; nothing ticked. Unblock via scripts/build-win.ps1 and docs/BUILD_CHECK.md.
