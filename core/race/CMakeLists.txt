@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.10)
+project(OpenRideCoreRace CXX)
+set(CMAKE_CXX_STANDARD 17)
+add_executable(RaceModelTests RaceModelTests.cpp)
+enable_testing()
+add_test(NAME RaceModelTests COMMAND RaceModelTests)

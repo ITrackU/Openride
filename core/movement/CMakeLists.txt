@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.10)
+project(OpenRideCoreMovement CXX)
+set(CMAKE_CXX_STANDARD 17)
+add_executable(CyclistMovementTests CyclistMovementTests.cpp)
+enable_testing()
+add_test(NAME CyclistMovementTests COMMAND CyclistMovementTests)

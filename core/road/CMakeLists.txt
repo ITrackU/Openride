@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.10)
+project(OpenRideCoreRoad CXX)
+set(CMAKE_CXX_STANDARD 17)
+add_executable(RoadMeshTests RoadMesh.cpp ../circuit/StadiumCircuit.cpp RoadMeshTests.cpp)
+enable_testing()
+add_test(NAME RoadMeshTests COMMAND RoadMeshTests)
