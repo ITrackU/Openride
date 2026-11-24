@@ -98,7 +98,7 @@ int32 AFoliageActor::RebuildFoliage()
 	const std::vector<OpenRideCore::FFoliageInstance> Scatter = OpenRideCore::ScatterFoliage(Params, Road);
 
 	TArray<FTransform> Transforms;
-	Transforms.Reserve(Scatter.Num());
+	Transforms.Reserve(static_cast<int32>(Scatter.size()));
 	for (const OpenRideCore::FFoliageInstance& S : Scatter)
 	{
 		Transforms.Add(FTransform(FRotator(0.f, S.YawDegrees, 0.f),
