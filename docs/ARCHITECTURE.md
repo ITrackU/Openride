@@ -1,11 +1,13 @@
 # OpenRide architecture
 
 ## Scope (current phase)
+
 Engine foundation + keyboard/mouse "viewer mode". No Cesium, no Bluetooth trainer,
 no external map plugins. Test world: one ~400 m stadium-shaped closed circuit.
 
 ## Repository layout (target)
-```
+
+```text
 OpenRide.uproject
 Source/
   OpenRide/                 UE5 game module (Build.cs, module class)
@@ -33,12 +35,14 @@ docs/                       ARCHITECTURE, ASSETS, BLOCKERS, BUILD_CHECK (manual 
 ```
 
 ## Project scaffold notes
-- Targets UE 5.4 (`EngineAssociation` in `OpenRide.uproject`); change it if you use another 5.x.
+
+- Targets UE 5.8 (`EngineAssociation` in `OpenRide.uproject`); change it if you use another 5.x.
 - Module `OpenRide` is the primary game module; log category `LogOpenRide` is declared in `OpenRide.h`.
 - Not compile-tested: UE cannot build on the ARM dev machine. First PC build may need small fixes.
 - Git LFS must be installed (`git lfs install`) before adding uasset/umap/fbx/png/wav files.
 
 ## Core module (engine-independent)
+
 - `core/circuit/StadiumCircuit.{h,cpp}`: `FStadiumCircuit` (default 400 m, R = 30 m; straight length derived).
   `SampleAtDistance(m)` returns position, unit tangent and wrapped distance; `GenerateSamples(N)` for spline points.
 - Local frame: start at origin heading +X, loop runs counter-clockwise, metres.
@@ -78,8 +82,9 @@ docs/                       ARCHITECTURE, ASSETS, BLOCKERS, BUILD_CHECK (manual 
 - Tests: `cd core/circuit && cmake -S . -B build && cmake --build build && ./build/StadiumCircuitTests`
 
 ## Class overview (planned)
+
 | Class | Responsibility |
-|-------|----------------|
+| ------- | ---------------- |
 | `ACircuitActor` (done, uncompiled) | Owns a `USplineComponent` built from circuit math; `GetTransformAtDistance(Meters)`; generates road + lane marking meshes |
 | `AGroundActor` (done, uncompiled) | Grass ground plane just under the road, fitted to the circuit bounds + margin; `UBoxComponent` playable bounds, `IsInsideBounds()`; placeholder grid material |
 | `ACyclistCharacter` (done, uncompiled) | `APawn` following the circuit by distance; Enhanced Input built in code (no .uasset): W/S/Up/Down move, mouse look, scroll zoom, `C` cycles chase / first-person / free-fly camera (`ECyclistCameraMode`); in free-fly the rider is parked and WASD+E/Q fly the camera along the view direction; speed from `core/movement` |
@@ -96,6 +101,7 @@ docs/                       ARCHITECTURE, ASSETS, BLOCKERS, BUILD_CHECK (manual 
 | `UOpenRideSettingsLibrary` (done, uncompiled) | UI/: `UBlueprintFunctionLibrary` over `UGameUserSettings`: offered resolutions (from `core/settings`), `ApplyResolution`, `ApplyQualityLevel` (0..3 -> all `sg.*` groups), `GetQualityLevel`, `SaveSettings`, `LoadAndApplySavedSettings`; used by the upcoming settings screen |
 
 ## Conventions
+
 - Epic coding standard (UpperCamelCase, `F/U/A/E` prefixes).
 - Small single-responsibility classes; comments explain *why*.
 - Pure logic lives in `core/` without UE dependencies so it can be unit-tested on the Pi.
@@ -103,6 +109,7 @@ docs/                       ARCHITECTURE, ASSETS, BLOCKERS, BUILD_CHECK (manual 
 - Unreal cannot be built on the Raspberry Pi dev machine: prefer simple, conventional UE5 patterns.
 
 ## Roadmap
+
 1. Phase 0: foundation (docs, project scaffold, README)
 2. Phase 1: 400 m circuit (math, spline actor, road, ground)
 3. Phase 2: player, movement model, cameras, HUD
