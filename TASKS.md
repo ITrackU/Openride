@@ -69,29 +69,29 @@ Goal: `npx markdownlint-cli2 "**/*.md"` exits with 0 errors.
 
 ### Auto-fixable rules
 
-- [ ] Run `npx markdownlint-cli2 --fix "**/*.md"` from the repo root and review the diff.
-- [ ] Confirm `CLAUDE.md` has a blank line before and after every heading and list (MD022, MD032).
-- [ ] Confirm `CONTRIBUTING.md` and `README.md` have blank lines around headings, lists and code fences (MD022, MD032, MD031).
-- [ ] Confirm `TASKS.md` itself passes: blank line around every `###` heading and every list block.
-- [ ] Confirm `docs/ARCHITECTURE.md` and `docs/CYCLIST_PIPELINE.md` pass MD022, MD032 and MD031.
+- [x] Run `npx markdownlint-cli2 --fix "**/*.md"` from the repo root and review the diff.
+- [x] Confirm `CLAUDE.md` has a blank line before and after every heading and list (MD022, MD032).
+- [x] Confirm `CONTRIBUTING.md` and `README.md` have blank lines around headings, lists and code fences (MD022, MD032, MD031).
+- [x] Confirm `TASKS.md` itself passes: blank line around every `###` heading and every list block.
+- [x] Confirm `docs/ARCHITECTURE.md` and `docs/CYCLIST_PIPELINE.md` pass MD022, MD032 and MD031.
 
 ### Manual fixes
 
-- [ ] MD040: add a language to the bare code fence at `README.md:40` (use `text` if it is not code).
-- [ ] MD040: add a language to the bare code fence at `docs/ARCHITECTURE.md:8` (use `text`).
-- [ ] MD040: add a language to the bare code fence at `docs/ANIMATION_BLUEPRINT_SPEC.md:26` (use `text`).
-- [ ] MD025: in `docs/ANIMATION_BLUEPRINT_SPEC.md:55`, change the second top-level `#` heading to `##`, or delete it if it duplicates the title.
-- [ ] MD031: make sure every fenced code block in `docs/ANIMATION_BLUEPRINT_SPEC.md` has a blank line before and after it.
+- [x] MD040: add a language to the bare code fence at `README.md:40` (use `text` if it is not code).
+- [x] MD040: add a language to the bare code fence at `docs/ARCHITECTURE.md:8` (use `text`).
+- [x] MD040: add a language to the bare code fence at `docs/ANIMATION_BLUEPRINT_SPEC.md:26` (use `text`).
+- [x] MD025: in `docs/ANIMATION_BLUEPRINT_SPEC.md:55`, change the second top-level `#` heading to `##`, or delete it if it duplicates the title.
+- [x] MD031: make sure every fenced code block in `docs/ANIMATION_BLUEPRINT_SPEC.md` has a blank line before and after it.
 
 ### Docs accuracy
 
-- [ ] Update `docs/ARCHITECTURE.md:36` from "Targets UE 5.4" to "Targets UE 5.8".
-- [ ] Search all `*.md` files for other mentions of UE 5.4 and update them to 5.8.
+- [x] Update `docs/ARCHITECTURE.md:36` from "Targets UE 5.4" to "Targets UE 5.8".
+- [x] Search all `*.md` files for other mentions of UE 5.4 and update them to 5.8.
 
 ### Prevent regressions
 
-- [ ] Add this rule to the Workflow rules in `CLAUDE.md`: Markdown must pass markdownlint, with blank lines around headings, lists and code fences, and a language on every code fence.
-- [ ] Add a `.markdownlint-cli2.jsonc` if missing, so local and CI lint use the same config.
-- [ ] Bump the actions in `.github/workflows/*.yml` (`actions/checkout`, `DavidAnson/markdownlint-cli2-action`) to versions that run on Node 24, to remove the Node 20 deprecation warning.
-- [ ] Run `npx markdownlint-cli2 "**/*.md"` one last time and confirm 0 errors, then commit on the `unreal` branch with the message "Fix markdownlint errors"
+- [x] Add this rule to the Workflow rules in `CLAUDE.md`: Markdown must pass markdownlint, with blank lines around headings, lists and code fences, and a language on every code fence.
+- [x] Add a `.markdownlint-cli2.jsonc` if missing, so local and CI lint use the same config.
+- [x] Bump the actions in `.github/workflows/*.yml` (`actions/checkout`, `DavidAnson/markdownlint-cli2-action`) to versions that run on Node 24, to remove the Node 20 deprecation warning.
+- [x] Run `npx markdownlint-cli2 "**/*.md"` one last time and confirm 0 errors, then commit on the `unreal` branch with the message "Fix markdownlint errors"
 .
