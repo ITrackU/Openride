@@ -18,6 +18,7 @@ public class OpenRide : ModuleRules
                 // tests rely on that). UE builds with C++ exceptions off by default (C4530), so enable
                 // them for this module only instead of forking the core error path.
                 bEnableExceptions = true;
+                bUseUnity = false;
 
                 PublicDependencyModuleNames.AddRange(new string[]
                 {
