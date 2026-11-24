@@ -11,14 +11,14 @@ jobs:
   core-tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Build and run core unit tests
         run: ./scripts/run_core_tests.sh
 
   markdown:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Markdown lint
         uses: DavidAnson/markdownlint-cli2-action@v16
         with:

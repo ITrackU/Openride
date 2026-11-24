@@ -37,7 +37,7 @@ will be added under `docs/screenshots/` and linked here.
 
 ## Building (on a PC)
 
-Requirements: Unreal Engine 5.4 (or another 5.x, see `EngineAssociation` in `OpenRide.uproject`),
+Requirements: Unreal Engine 5.8 (or another 5.x, see `EngineAssociation` in `OpenRide.uproject`),
 a C++ toolchain (Visual Studio 2022 on Windows; clang via the UE toolchain on Linux; Xcode on macOS),
 and [Git LFS](https://git-lfs.com/).
 

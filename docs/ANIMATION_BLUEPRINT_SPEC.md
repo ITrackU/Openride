@@ -59,7 +59,7 @@ on `SK_Bike`, so pedals and handlebars drive the limbs.
   Bluetooth trainer will supply the real cadence; `UCyclistAnimInstance` is where it will plug in.
 - The anim logic has unit tests: `cd core/anim && cmake -S . -B build && cmake --build build && ./build/CyclistAnimModelTests`.
 
-# Animation Blueprint spec: `ABP_Bike`
+## Animation Blueprint spec: `ABP_Bike`
 
 Parent class `UBikeAnimInstance` (Cyclist/), assigned to `ABikeActor::BikeMesh` in a Blueprint
 subclass (`BP_Bike`) together with `SK_Bike`. Owner must be an `ABikeActor`.
